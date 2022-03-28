@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 import java.awt.*;
 import java.util.Stack;
 
-public class Main extends Application implements EventHandler<ActionEvent> {
+public class Main extends Application {
 
     Button button;
 
@@ -23,7 +23,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 
         button = new Button();
         button.setText("fasz");
-        button.setOnAction(this);
+        button.setOnAction(e -> System.out.println("Fasz"));
 
         StackPane layout = new StackPane();
         layout.getChildren().add(button);
@@ -33,10 +33,4 @@ public class Main extends Application implements EventHandler<ActionEvent> {
         primaryStage.show();
     }
 
-    @Override
-    public void handle(ActionEvent actionEvent) {
-        if (actionEvent.getSource() == button) {
-            System.out.println("fasz");
-        }
-    }
 }
