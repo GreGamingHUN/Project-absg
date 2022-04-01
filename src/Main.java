@@ -13,7 +13,7 @@ import java.util.Stack;
 
 public class Main extends Application {
 
-    Stage window;
+    Stage window, window2;
     Scene scene1, scene2;
 
     public static void main(String[] args) {
@@ -23,14 +23,15 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         window = primaryStage;
-
-
+        window2 = new Stage();
+        window2.setScene(scene2);
         //Button 1
         Label label1 = new Label("Szoszi devla");
         Button button1 = new Button("Go to scene 2");
         button1.setOnAction(e -> {
             System.out.println("toScene 2");
             window.setScene(scene2);
+            window2.show();
         });
 
         //Layout 1
