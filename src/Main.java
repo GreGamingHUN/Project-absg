@@ -1,20 +1,24 @@
 import javafx.application.Application;
 import javafx.event.ActionEvent;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-
-import java.awt.*;
+import org.w3c.dom.Text;
+import javafx.scene.shape.Rectangle;
 import java.util.Stack;
 
 public class Main extends Application {
 
-    Stage window, window2;
-    Scene scene1, scene2;
+    Stage window;
+    Scene scene1;
 
     public static void main(String[] args) {
         launch(args);
@@ -23,34 +27,37 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         window = primaryStage;
-        window2 = new Stage();
-        window2.setScene(scene2);
-        //Button 1
-        Label label1 = new Label("Szoszi devla");
-        Button button1 = new Button("Go to scene 2");
-        button1.setOnAction(e -> {
-            System.out.println("toScene 2");
-            window.setScene(scene2);
-            window2.show();
-        });
 
         //Layout 1
-        VBox layout1 = new VBox(20);
-        layout1.getChildren().addAll(label1, button1);
-        scene1 = new Scene(layout1, 200, 200);
+        GridPane root = new GridPane();
+        GridPane map = new GridPane();
+        GridPane sideBar = new GridPane();
+
+        map.setMinSize(400, 200);
+        map.setPadding(new Insets(10, 10, 10, 10));
+        map.setVgap(1);
+        map.setHgap(1);
+        map.setAlignment(Pos.CENTER);
+        int gridSizeX = 12;
+        int gridSizeY = 10;
+        int rectSize = 60;
+        root.add(map, 0, 0);
+        root.add(sideBar, 1, 0);
+        Tile[][] tiles = new Tile[gridSizeX][gridSizeY];
+
+        for (int i = 0; i < gridSizeX; i++) {
+            for (int j = 0; j < gridSizeY; j++) {
+                tiles[i][j] = new Tile(new Rectangle(rectSize, rectSize), i, j);
+                map.add(tiles[i][j].getTileRect(), i, j);
+                tiles[i][j].getTileRect().setFill(Color.rgb(74, 207, 110));
+            }
+        }
+        sideBar.add(new Label("Fasz"), 0, 0);
+        sideBar.setMaxHeight(20);
 
 
-        //Button 2
-        Button button2 = new Button("Go to scene 1");
-        button1.setOnAction(e -> {
-            window.setScene(scene1);
-            System.out.println("toScene 1");
-        });
-
-        //Layout 2
-        StackPane layout2 = new StackPane();
-        layout2.getChildren().add(button2);
-        scene2 = new Scene(layout2, 600, 300);
+        //root.getChildren().addAll();
+        scene1 = new Scene(root);
 
         //Set Default Scene
         window.setScene(scene1);
