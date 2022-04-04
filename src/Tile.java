@@ -1,7 +1,7 @@
 import javafx.scene.shape.Rectangle;
 
 public class Tile {
-    Ember emberOnTile;
+    Unit unitOnTile;
     Rectangle tileRect;
     int posX, posY;
 
@@ -11,12 +11,12 @@ public class Tile {
         this.posY = posY;
     }
 
-    public Ember getEmberOnTile() {
-        return this.emberOnTile;
+    public Unit getEmberOnTile() {
+        return this.unitOnTile;
     }
 
-    public void setEmberOnTile(Ember emberOnTile) {
-        this.emberOnTile = emberOnTile;
+    public void setEmberOnTile(Unit unitOnTile) {
+        this.unitOnTile = unitOnTile;
     }
 
     public Rectangle getTileRect() {

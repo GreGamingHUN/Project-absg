@@ -1,48 +1,45 @@
 import javafx.application.Application;
-import javafx.geometry.HPos;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.geometry.VPos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import java.io.IOException;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.StageStyle;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-
-import java.awt.*;
-import java.io.FileInputStream;
 
 public class Main extends Application {
+
+
+    //Game Stages:
+    //-1 = Intro
+    //0 = Tactical Phase
+    //1 = Fight Phase
+    public int gameStage = -1;
 
     Stage window, difficultyWindow;
     Scene mainScene, difficultyScene;
 
-    GridPane root = new GridPane();
+    /*GridPane root = new GridPane();
     GridPane map = new GridPane();
     GridPane sideBarStart = new GridPane();
     GridPane items = new GridPane();
-    GridPane sideBar = new GridPane();
+    GridPane sideBar = new GridPane();*/
 
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        window = primaryStage;
+    public void start(Stage primaryStage) throws IOException {
+        /*window = primaryStage;
         window.setResizable(false);
         difficultyWindow = new Stage();
         difficultyWindow.initStyle(StageStyle.UTILITY);
-        difficultyWindow.setResizable(false);
+        difficultyWindow.setResizable(false);*/
 
-        //region Grids
+        /*        //region Grids
 
 
         GridPane difficulty = new GridPane();
@@ -62,18 +59,7 @@ public class Main extends Application {
         map.setVgap(1);
         map.setHgap(1);
         map.setAlignment(Pos.CENTER);
-        int gridSizeX = 12;
-        int gridSizeY = 10;
-        int rectSize = 60;
-        Tile[][] tiles = new Tile[gridSizeX][gridSizeY];
 
-        for (int i = 0; i < gridSizeX; i++) {
-            for (int j = 0; j < gridSizeY; j++) {
-                tiles[i][j] = new Tile(new Rectangle(rectSize, rectSize), i, j);
-                map.add(tiles[i][j].getTileRect(), i, j);
-                tiles[i][j].getTileRect().setFill(Color.rgb(74, 207, 110));
-            }
-        }
         //endregion
 
         //region sideBarStart Grid
@@ -185,11 +171,15 @@ public class Main extends Application {
         window.setScene(mainScene);
         window.setTitle("ABSG");
         window.show();
-        //endregion
+        //endregion*/
+        VBox root = FXMLLoader.load(getClass().getResource("FX_Events.fxml"));
+        Scene scene = new Scene(root);
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Fasz");
+        primaryStage.show();
+
     }
 
-    public void startGame() {
-        difficultyWindow.hide();
-    }
+
 
 }
