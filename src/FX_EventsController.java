@@ -1,10 +1,13 @@
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -19,9 +22,8 @@ import static javafx.scene.paint.Color.rgb;
 
 public class FX_EventsController {
 
-    public void initialize(URL url, ResourceBundle rb) {
-
-    }
+    @FXML
+    private MenuItem menuItemExit;
 
     @FXML
     private ToggleGroup difficulty;
@@ -46,22 +48,27 @@ public class FX_EventsController {
 
     @FXML
     private GridPane tilesGrid;
+    @FXML
+    private ImageView villagerImage;
+    @FXML
+    private GridPane unitsGrid;
 
     @FXML
     void startGame(ActionEvent event) {
         System.out.println("fasz");
-        int gridSizeX = 12;
-        int gridSizeY = 10;
-        int rectSize = 30;
-        Tile[][] tileArray = new Tile[gridSizeX][gridSizeY];
-        for (int i = 0; i < gridSizeX; i++) {
-            for (int j = 0; j < gridSizeY; j++) {
-                tileArray[i][j] = new Tile(new Rectangle(rectSize, rectSize), i, j);
-                tilesGrid.add(tileArray[i][j].getTileRect(), i, j);
-                tileArray[i][j].getTileRect().setFill(rgb(74, 207, 110));
-            }
+        unitsGrid.setOpacity(1);
+        if (difficultyEasy.isSelected()) {
+            Main.startGameMain(tilesGrid, 1);
+        } else if (difficultyMedium.isSelected()) {
+            Main.startGameMain(tilesGrid, 2);
+        } else if (difficultyHard.isSelected()) {
+            Main.startGameMain(tilesGrid, 3);
         }
     }
 
 
+    @FXML
+    public void exitGame(ActionEvent actionEvent) {
+        System.exit(0);
+    }
 }
