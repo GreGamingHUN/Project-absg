@@ -1,4 +1,7 @@
+package units;
+
 import javafx.scene.shape.Rectangle;
+import units.*;
 
 public class Tile {
     Unit unitOnTile = null;
