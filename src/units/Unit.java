@@ -1,26 +1,42 @@
 package units;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+
+import java.util.Random;
+
 public class Unit {
 
-    private String pathToImg;
+    private int posX;
+    private int posY;
+
     private Hos parentHos;
     //Core stats
     private int price;
-    private int dmg;
+    private int minDmg;
+    private int maxDmg;
     private int hp;
     private int speed;
     private int priority;
 
-    public Unit(int price, int dmg, int hp, int speed, int priority, Hos parent) {
+    private ImageView img;
+
+    public Unit() {
+    }
+
+    public Unit(int price, int minDmg, int hp, int speed, int priority, Hos parent) {
         this.setPrice(price);
-        this.setDmg(dmg);
+        this.setMinDmg(minDmg);
         this.setHp(hp);
         this.setSpeed(speed);
         this.setPriority(priority);
     }
 
     public void normalTamadas(Unit enemy) {
-        
+        Random r = new Random();
+        int dmgToEnemy = (int) ((r.nextInt(this.getMaxDmg()-this.getMinDmg()) + this.getMinDmg()) * (1 + (0.1 * this.getParentHos().getDmgUp())) -
+                (0.05 * enemy.getParentHos().getDefUp()));
+        enemy.setHp(enemy.getHp() - dmgToEnemy);
     }
 
     //region Getters
@@ -28,8 +44,8 @@ public class Unit {
         return this.price;
     }
 
-    public int getDmg() {
-        return this.dmg;
+    public int getMinDmg() {
+        return this.minDmg;
     }
 
     public int getHp() {
@@ -48,6 +64,22 @@ public class Unit {
         return this.parentHos;
     }
 
+    public int getMaxDmg() {
+        return this.maxDmg;
+    }
+
+    public int getPosX() {
+        return this.posX;
+    }
+
+    public int getPosY() {
+        return this.posY;
+    }
+
+    public ImageView getImg() {
+        return this.img;
+    }
+
     //endregion
 
     //region Setters
@@ -56,8 +88,8 @@ public class Unit {
         this.price = price;
     }
 
-    public void setDmg(int dmg) {
-        this.dmg = dmg;
+    public void setMinDmg(int minDmg) {
+        this.minDmg = minDmg;
     }
 
     public void setHp(int hp) {
@@ -74,6 +106,23 @@ public class Unit {
 
     public void setParentHos(Hos parentHos) {
         this.parentHos = parentHos;
+    }
+
+    public void setMaxDmg(int maxDmg) {
+        this.maxDmg = maxDmg;
+    }
+
+
+    public void setImg(ImageView img) {
+        this.img = img;
+    }
+
+    public void setPosX(int posX) {
+        this.posX = posX;
+    }
+
+    public void setPosY(int posY) {
+        this.posY = posY;
     }
 
     //endregion
