@@ -26,4 +26,38 @@ public class Hos {
                 this.balance = 700;
         }
     }
+
+
+    //region Getters
+    public int getBalance() {
+        return this.balance;
+    }
+
+    public int getMana() {
+        return this.mana;
+    }
+
+    public int getDmgUp() {
+        return this.dmgUp;
+    }
+
+    public int getDefUp() {
+        return this.defUp;
+    }
+
+    public int getMagicUp() {
+        return this.magicUp;
+    }
+
+    public int getKnowledge() {
+        return this.knowledge;
+    }
+
+    public int getMoral() {
+        return this.moral;
+    }
+
+    public int getLuck() {
+        return this.luck;
+    }
 }
