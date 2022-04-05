@@ -6,6 +6,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import javafx.scene.shape.Rectangle;
 
@@ -18,14 +20,6 @@ public class Main extends Application {
     //1 = Fight Phase
     public int gameStage = -1;
 
-    Stage window, difficultyWindow;
-    Scene mainScene, difficultyScene;
-
-    /*GridPane root = new GridPane();
-    GridPane map = new GridPane();
-    GridPane sideBarStart = new GridPane();
-    GridPane items = new GridPane();
-    GridPane sideBar = new GridPane();*/
 
     public static void main(String[] args) {
         launch(args);
@@ -70,8 +64,7 @@ public class Main extends Application {
         startButton.setOnAction(e-> {
             System.out.println("fasz");
             difficultyWindow.show();
-            //root.getChildren().remove(sideBarStart);
-            //root.add(sideBar, 1, 0);
+                        //root.add(sideBar, 1, 0);
         });
 
         welcomeLabel.setText("Üdvözöllek a Project-ABSG-ben!");
@@ -172,13 +165,17 @@ public class Main extends Application {
         window.setTitle("ABSG");
         window.show();
         //endregion*/
+
         VBox root = FXMLLoader.load(getClass().getResource("FX_Events.fxml"));
+        primaryStage.setResizable(false);
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Fasz");
         primaryStage.show();
 
+
     }
+
 
 
 

@@ -1,12 +1,18 @@
 import javafx.scene.shape.Rectangle;
 
 public class Tile {
-    Unit unitOnTile;
-    Rectangle tileRect;
-    int posX, posY;
+    Unit unitOnTile = null;
+    Rectangle tileRect = null;
+    int posX, posY = -1;
+
+
+
 
     public Tile(Rectangle tileRect, int posX, int posY) {
         this.tileRect = tileRect;
+        this.tileRect.setOnMouseClicked(e -> {
+            System.out.println(getPosX() + " " + getPosY());
+        });
         this.posX = posX;
         this.posY = posY;
     }
