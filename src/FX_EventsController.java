@@ -32,10 +32,10 @@ public class FX_EventsController {
     private RadioButton difficultyEasy;
 
     @FXML
-    private RadioButton difficultyHard;
+    private RadioButton difficultyMedium;
 
     @FXML
-    private RadioButton difficultyMedium;
+    private RadioButton difficultyHard;
 
     @FXML
     private VBox rootScene;
@@ -48,8 +48,7 @@ public class FX_EventsController {
 
     @FXML
     private GridPane tilesGrid;
-    @FXML
-    private ImageView villagerImage;
+
     @FXML
     private GridPane unitsGrid;
 
@@ -58,14 +57,13 @@ public class FX_EventsController {
         System.out.println("fasz");
         unitsGrid.setOpacity(1);
         if (difficultyEasy.isSelected()) {
-            Main.startGameMain(tilesGrid, 1);
+            Main.startGameMain(tilesGrid, unitsGrid, 1);
         } else if (difficultyMedium.isSelected()) {
-            Main.startGameMain(tilesGrid, 2);
+            Main.startGameMain(tilesGrid, unitsGrid, 2);
         } else if (difficultyHard.isSelected()) {
-            Main.startGameMain(tilesGrid, 3);
+            Main.startGameMain(tilesGrid, unitsGrid, 3);
         }
     }
-
 
     @FXML
     public void exitGame(ActionEvent actionEvent) {
