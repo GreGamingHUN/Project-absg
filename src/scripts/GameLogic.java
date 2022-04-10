@@ -19,9 +19,9 @@ public class GameLogic {
     Hos player;
     Hos enemy;
 
-    int gridSizeX = 10;
-    int gridSizeY = 12;
-    Tile[][] tileArray = new Tile[gridSizeX][gridSizeY];
+    static int gridSizeX = 10;
+    static int gridSizeY = 12;
+    static public Tile[][] tileArray = new Tile[gridSizeX][gridSizeY];
     final int difficulty;
 
     public GameLogic(int difficulty) {
@@ -271,6 +271,6 @@ public class GameLogic {
 
 
     public void buyMagic() {
-
+        System.out.println();
     }
 }
