@@ -3,6 +3,7 @@ package scripts;
 import units.*;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Scanner;
 
 
@@ -35,7 +36,7 @@ public class GameLogic {
             if (gameState == 1) {
                 break;
             }
-            buyPhase();
+            buyUnits();
         }
 
         fightPhase();
@@ -78,40 +79,64 @@ public class GameLogic {
         }
     }
 
-    public void buyPhase() throws IOException, InterruptedException {
+    public void buyUnits() throws IOException, InterruptedException {
         drawGrid();
         System.out.println("Penzed = " + player.getBalance());
         System.out.println("Mit szeretnel tenni?");
-        System.out.println("1 - Munkas");
-        System.out.println("2 - ijasz");
-        System.out.println("3 - Griff");
+        System.out.println("1 - Munkas      2 arany/db");
+        System.out.println("2 - ijasz       6 arany/db");
+        System.out.println("3 - Griff      15 arany/db");
         System.out.println("4 - Kepessegek fejlesztese");
-        System.out.println("5 - Start");
+        System.out.println("5 - Varazslatok vasarlasa");
+        System.out.println("6 - Start");
+        System.out.println("7 - Kilepes\n\n");
+        System.out.println("Tulajdonsagok:");
+        System.out.println("Tamadas     " + player.getDmgUp());
+        System.out.println("Vedekezes   " + player.getDefUp());
+        System.out.println("Varazsero   " + player.getMagicUp());
+        System.out.println("Tudas       " + player.getKnowledge());
+        System.out.println("Moral       " + player.getMoral());
+        System.out.println("Szerencse   " + player.getLuck());
         Scanner sc = new Scanner(System.in);
+        System.out.print("Opcio: ");
         int number = sc.nextInt();
-        if (number == 5) {
-            for (int i = 0; i < gridSizeX; i++) {
-                for (int j = 0; j < gridSizeY; j++) {
-                    if(tileArray[i][j].getEmberOnTile() != null) {
-                        gameState = 1;
-                        System.out.println("Kezdodhet a moka");
-                        return;
+
+        switch (number) {
+            case 4 -> {
+                buyAbility();
+                return;
+            }
+            case 5 -> {
+                buyMagic();
+                return;
+            }
+            case 6 -> {
+                for (int i = 0; i < gridSizeX; i++) {
+                    for (int j = 0; j < gridSizeY; j++) {
+                        if (tileArray[i][j].getEmberOnTile() != null) {
+                            gameState = 1;
+                            System.out.println("Kezdodhet a moka");
+                            return;
+                        }
                     }
                 }
+                System.out.println("Eloszor tegyel le egy egyseget!");
+                try {
+                    System.in.read();
+                } catch (Exception e) {
+                }
+                return;
             }
-            System.out.println("Eloszor tegyel le egy egyseget!");
-            try
-            {
-                System.in.read();
+            case 7 -> {
+                System.out.println("Biztos ki akarsz lepni a jatekbol? A nem mentett modositasok elvesznek! (y/n)");
+                Scanner scanner = new Scanner(System.in);
+                String answer = scanner.next();
+                if (Objects.equals(answer, "y") || Objects.equals(answer, "Y")) {
+                    System.exit(0);
+                } else {
+                    return;
+                }
             }
-            catch(Exception e)
-            {}
-            return;
-        }
-
-        if (number == 4) {
-            abilityChange();
-            return;
         }
 
         int posX = -1;
@@ -130,7 +155,7 @@ public class GameLogic {
             posY = sc.nextInt();
         }
 
-        System.out.println("Hany egységet akarsz lerakni?");
+        System.out.println("Hany egyseget akarsz lerakni?");
         unitAmount = sc.nextInt();
         System.out.println(unitAmount);
         System.out.println(posX);
@@ -154,23 +179,40 @@ public class GameLogic {
             return;
         }
 
+
         switch (number) {
             case 1:
                 tileArray[posX][posY].setEmberOnTile(new Worker());
-                player.setBalance(player.getBalance() - tileArray[posX][posY].getEmberOnTile().getPrice());
+                if (player.getBalance() - tileArray[posX][posY].getEmberOnTile().getPrice() * tileArray[posX][posY].getEmberOnTile().getUnitAmount() < 0) {
+                    System.out.println("Nincs ehhez eleg aranyad!");
+                    tileArray[posX][posY].setEmberOnTile(null);
+                } else {
+                    player.setBalance(player.getBalance() - tileArray[posX][posY].getEmberOnTile().getPrice() * tileArray[posX][posY].getEmberOnTile().getUnitAmount());
+                }
                 break;
             case 2:
                 tileArray[posX][posY].setEmberOnTile(new Archer());
-                player.setBalance(player.getBalance() - tileArray[posX][posY].getEmberOnTile().getPrice());
+                if (player.getBalance() - tileArray[posX][posY].getEmberOnTile().getPrice() * tileArray[posX][posY].getEmberOnTile().getUnitAmount() < 0) {
+                    System.out.println("Nincs ehhez eleg aranyad!");
+                    tileArray[posX][posY].setEmberOnTile(null);
+                } else {
+                    player.setBalance(player.getBalance() - tileArray[posX][posY].getEmberOnTile().getPrice() * tileArray[posX][posY].getEmberOnTile().getUnitAmount());
+                }
                 break;
             case 3:
                 tileArray[posX][posY].setEmberOnTile(new Griff());
-                player.setBalance(player.getBalance() - tileArray[posX][posY].getEmberOnTile().getPrice());
+                if (player.getBalance() - tileArray[posX][posY].getEmberOnTile().getPrice() * tileArray[posX][posY].getEmberOnTile().getUnitAmount() < 0) {
+                    System.out.println("Nincs ehhez eleg aranyad!");
+                    tileArray[posX][posY].setEmberOnTile(null);
+                } else {
+                    player.setBalance(player.getBalance() - tileArray[posX][posY].getEmberOnTile().getPrice() * tileArray[posX][posY].getEmberOnTile().getUnitAmount());
+                }
                 break;
         }
+
     }
 
-    public void abilityChange () throws IOException, InterruptedException {
+    public void buyAbility() throws IOException, InterruptedException {
         Scanner sc = new Scanner(System.in);
 
         int abilityNumber = -1;
@@ -179,43 +221,56 @@ public class GameLogic {
             new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
 
             System.out.println("Melyik kepesseget szeretned fejleszteni?");
-            System.out.println("1 - Tamadas");
-            System.out.println("2 - Vedekezes");
-            System.out.println("3 - Varazsero");
-            System.out.println("4 - Tudas");
-            System.out.println("5 - Moral");
-            System.out.println("6 - Szerencse");
-            System.out.println("7- Vissza");
+            System.out.println("1 - Tamadas     " + player.getDmgUp());
+            System.out.println("2 - Vedekezes   " + player.getDefUp());
+            System.out.println("3 - Varazsero   " + player.getMagicUp());
+            System.out.println("4 - Tudas       " + player.getKnowledge());
+            System.out.println("5 - Moral       " + player.getMoral());
+            System.out.println("6 - Szerencse   " + player.getLuck());
+            System.out.println("7- Vissza\n");
 
+            System.out.print("Opcio: ");
             abilityNumber = sc.nextInt();
+        }
+
+        if (abilityNumber == 7) {
+            return;
         }
 
         int value = -1;
 
         while (value < 1 || value > 10) {
-            System.out.println("Mekkora erteket szeretnel neki adni?");
+            System.out.println("Mekkora erteket szeretnel hozzaadni?");
             value = sc.nextInt();
         }
 
-        player.setBalance(player.getBalance() - player.getAbilityPrice());
-        player.setAbilityPrice((int)Math.ceil((double)player.getAbilityPrice() * 1.1));
 
         switch (abilityNumber) {
             case 1:
                 player.setDmgUp(value);
+                break;
             case 2:
                 player.setDefUp(value);
+                break;
             case 3:
                 player.setMagicUp(value);
+                break;
             case 4:
                 player.setKnowledge(value);
+                break;
             case 5:
                 player.setMoral(value);
+                break;
             case 6:
                 player.setLuck(value);
+                break;
 
         }
 
     }
 
+
+    public void buyMagic() {
+
+    }
 }

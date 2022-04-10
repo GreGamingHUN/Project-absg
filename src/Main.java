@@ -1,6 +1,4 @@
 import scripts.GameLogic;
-
-import java.awt.desktop.SystemSleepEvent;
 import java.io.IOException;
 import java.util.Scanner;
 

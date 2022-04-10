@@ -1,5 +1,8 @@
 package units;
 
+import java.util.Objects;
+import java.util.Scanner;
+
 public class Hos {
     private int balance;
     private int mana;
@@ -88,27 +91,122 @@ public class Hos {
     }
 
     public void setDmgUp(int dmgUp) {
-        this.dmgUp = dmgUp;
+        int price = 0;
+        for (int i = 0; i < dmgUp; i++) {
+            price += this.getAbilityPrice();
+            this.setAbilityPrice((int)Math.ceil(this.getAbilityPrice() * 1.1));
+        }
+        System.out.println("Ez " + price +" aranyba fog kerülni. Elfogadod? (y/n)");
+        Scanner sc = new Scanner(System.in);
+        String answer = sc.next();
+        if (Objects.equals(answer, "y") || Objects.equals(answer, "Y")) {
+            if (this.getBalance() - price >= 0) {
+                this.dmgUp += dmgUp;
+                this.setBalance(this.getBalance() - price);
+            } else {
+                System.out.println("Nincs ehhez eleg aranyad!");
+            }
+        }
     }
 
     public void setDefUp(int defUp) {
-        this.defUp = defUp;
+        int price = 0;
+        for (int i = 0; i < defUp; i++) {
+            price += this.getAbilityPrice();
+            this.setAbilityPrice((int)Math.ceil(this.getAbilityPrice() * 1.1));
+        }
+        System.out.println("Ez " + price +" aranyba fog kerülni. Elfogadod? (y/n)");
+        Scanner sc = new Scanner(System.in);
+        String answer = sc.next();
+        if (Objects.equals(answer, "y") || Objects.equals(answer, "Y")) {
+
+            if (this.getBalance() - price >= 0) {
+                this.defUp += defUp;
+                this.setBalance(this.getBalance() - price);
+            } else {
+                System.out.println("Nincs ehhez eleg aranyad!");
+            }
+        }
     }
 
     public void setMagicUp(int magicUp) {
-        this.magicUp = magicUp;
+        int price = 0;
+        for (int i = 0; i < magicUp; i++) {
+            price += this.getAbilityPrice();
+            this.setAbilityPrice((int)Math.ceil(this.getAbilityPrice() * 1.1));
+        }
+        System.out.println("Ez " + price +" aranyba fog kerülni. Elfogadod? (y/n)");
+        Scanner sc = new Scanner(System.in);
+        String answer = sc.next();
+        if (Objects.equals(answer, "y") || Objects.equals(answer, "Y")) {
+
+            if (this.getBalance() - price >= 0) {
+                this.magicUp += magicUp;
+                this.setBalance(this.getBalance() - price);
+            } else {
+                System.out.println("Nincs ehhez eleg aranyad!");
+            }
+        }
     }
 
     public void setKnowledge(int knowledge) {
-        this.knowledge = knowledge;
+        int price = 0;
+        for (int i = 0; i < knowledge; i++) {
+            price += this.getAbilityPrice();
+            this.setAbilityPrice((int)Math.ceil(this.getAbilityPrice() * 1.1));
+        }
+        System.out.println("Ez " + price +" aranyba fog kerülni. Elfogadod? (y/n)");
+        Scanner sc = new Scanner(System.in);
+        String answer = sc.next();
+        if (Objects.equals(answer, "y") || Objects.equals(answer, "Y")) {
+
+            if (this.getBalance() - price >= 0) {
+                this.knowledge += knowledge;
+                this.setBalance(this.getBalance() - price);
+            } else {
+                System.out.println("Nincs ehhez eleg aranyad!");
+            }
+        }
     }
 
     public void setMoral(int moral) {
-        this.moral = moral;
+        int price = 0;
+        for (int i = 0; i < moral; i++) {
+            price += this.getAbilityPrice();
+            this.setAbilityPrice((int)Math.ceil(this.getAbilityPrice() * 1.1));
+        }
+        System.out.println("Ez " + price +" aranyba fog kerülni. Elfogadod? (y/n)");
+        Scanner sc = new Scanner(System.in);
+        String answer = sc.next();
+        if (Objects.equals(answer, "y") || Objects.equals(answer, "Y")) {
+
+            if (this.getBalance() - price >= 0) {
+                this.moral += moral;
+                this.setBalance(this.getBalance() - price);
+            } else {
+                System.out.println("Nincs ehhez eleg aranyad!");
+            }
+        }
     }
 
     public void setLuck(int luck) {
-        this.luck = luck;
+        int price = 0;
+        for (int i = 0; i < luck; i++) {
+            price += this.getAbilityPrice();
+            this.setAbilityPrice((int)Math.ceil(this.getAbilityPrice() * 1.1));
+        }
+        System.out.println("Ez " + price +" aranyba fog kerülni. Elfogadod? (y/n)");
+        Scanner sc = new Scanner(System.in);
+        String answer = sc.next();
+        if (Objects.equals(answer, "y") || Objects.equals(answer, "Y")) {
+
+            if (this.getBalance() - price >= 0) {
+                this.luck += luck;
+                this.setBalance(this.getBalance() - price);
+            } else {
+                System.out.println("Nincs ehhez eleg aranyad!");
+            }
+        }
     }
 
     //endregion
