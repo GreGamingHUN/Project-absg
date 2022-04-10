@@ -8,7 +8,8 @@ import java.util.Scanner;
 
 
 public class GameLogic {
-
+    public static final String TEXT_GREEN = "\u001B[32m";
+    public static final String TEXT_RESET = "\u001B[0m";
 
     //Game States
     //0 = buying phase
@@ -32,15 +33,10 @@ public class GameLogic {
     public void startGame() throws IOException, InterruptedException {
         setUpGrid();
 
-        while (true) {
-            if (gameState == 1) {
-                break;
-            }
+        while (gameState == 0) {
             buyUnits();
         }
-
         fightPhase();
-
     }
 
     public void fightPhase() {
@@ -61,19 +57,19 @@ public class GameLogic {
         new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
         for (int i = 0; i < gridSizeX; i++) {
 
-            if (i + 0 < 10) {
+            if (i < 10) {
                 System.out.print(i + "  ");
             } else {
                 System.out.print(i + " ");
             }
-            System.out.print("|");
+            System.out.print(TEXT_GREEN + "|" + TEXT_RESET);
             for (int j = 0; j < gridSizeY; j++) {
                 if (tileArray[i][j].getEmberOnTile() != null) {
                     System.out.print(" " + tileArray[i][j].getEmberOnTile().getUnitName() + " ");
                 } else {
                     System.out.print("   ");
                 }
-                System.out.print("|");
+                System.out.print(TEXT_GREEN + "|" + TEXT_RESET);
             }
             System.out.println("");
         }
@@ -181,7 +177,7 @@ public class GameLogic {
 
 
         switch (number) {
-            case 1:
+            case 1 -> {
                 tileArray[posX][posY].setEmberOnTile(new Worker());
                 if (player.getBalance() - tileArray[posX][posY].getEmberOnTile().getPrice() * tileArray[posX][posY].getEmberOnTile().getUnitAmount() < 0) {
                     System.out.println("Nincs ehhez eleg aranyad!");
@@ -189,8 +185,8 @@ public class GameLogic {
                 } else {
                     player.setBalance(player.getBalance() - tileArray[posX][posY].getEmberOnTile().getPrice() * tileArray[posX][posY].getEmberOnTile().getUnitAmount());
                 }
-                break;
-            case 2:
+            }
+            case 2 -> {
                 tileArray[posX][posY].setEmberOnTile(new Archer());
                 if (player.getBalance() - tileArray[posX][posY].getEmberOnTile().getPrice() * tileArray[posX][posY].getEmberOnTile().getUnitAmount() < 0) {
                     System.out.println("Nincs ehhez eleg aranyad!");
@@ -198,8 +194,8 @@ public class GameLogic {
                 } else {
                     player.setBalance(player.getBalance() - tileArray[posX][posY].getEmberOnTile().getPrice() * tileArray[posX][posY].getEmberOnTile().getUnitAmount());
                 }
-                break;
-            case 3:
+            }
+            case 3 -> {
                 tileArray[posX][posY].setEmberOnTile(new Griff());
                 if (player.getBalance() - tileArray[posX][posY].getEmberOnTile().getPrice() * tileArray[posX][posY].getEmberOnTile().getUnitAmount() < 0) {
                     System.out.println("Nincs ehhez eleg aranyad!");
@@ -207,7 +203,7 @@ public class GameLogic {
                 } else {
                     player.setBalance(player.getBalance() - tileArray[posX][posY].getEmberOnTile().getPrice() * tileArray[posX][posY].getEmberOnTile().getUnitAmount());
                 }
-                break;
+            }
         }
 
     }
@@ -246,31 +242,32 @@ public class GameLogic {
 
 
         switch (abilityNumber) {
-            case 1:
-                player.setDmgUp(value);
-                break;
-            case 2:
-                player.setDefUp(value);
-                break;
-            case 3:
-                player.setMagicUp(value);
-                break;
-            case 4:
-                player.setKnowledge(value);
-                break;
-            case 5:
-                player.setMoral(value);
-                break;
-            case 6:
-                player.setLuck(value);
-                break;
-
+            case 1 -> player.setDmgUp(value);
+            case 2 -> player.setDefUp(value);
+            case 3 -> player.setMagicUp(value);
+            case 4 -> player.setKnowledge(value);
+            case 5 -> player.setMoral(value);
+            case 6 -> player.setLuck(value);
         }
 
     }
 
 
-    public void buyMagic() {
-        System.out.println();
+    public void buyMagic() throws IOException, InterruptedException {
+        new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+        System.out.println("Milyen varazslatot szeretnel venni?");
+        System.out.println("1 - Villam");
+        System.out.println("2 - Tuzlabda");
+        System.out.println("3 - Feltamasztas");
+        System.out.println("4 - Vissza");
+        System.out.print("Opcio: ");
+        Scanner sc = new Scanner(System.in);
+        int number = sc.nextInt();
+
+        if (number == 1) {
+            for (int i = 0; i < player.getBoughtMagic().length; i++) {
+
+            }
+        }
     }
 }

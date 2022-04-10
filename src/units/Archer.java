@@ -14,5 +14,7 @@ public class Archer extends Unit{
         this.setPriority(9);
     }
 
+    public void shoot(Unit target) {
 
+    }
 }

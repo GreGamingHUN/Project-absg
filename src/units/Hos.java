@@ -1,9 +1,12 @@
 package units;
 
+import magics.Magic;
+
 import java.util.Objects;
 import java.util.Scanner;
 
 public class Hos {
+    private Magic[] boughtMagic = new Magic[100];
     private int balance;
     private int mana;
 
@@ -37,7 +40,6 @@ public class Hos {
     //endregion
 
     //region Getters
-
 
     public int getAbilityPrice() {
         return this.abilityPrice;
@@ -74,10 +76,14 @@ public class Hos {
     public int getLuck() {
         return this.luck;
     }
+
+    public Magic[] getBoughtMagic() {
+        return this.boughtMagic;
+    }
+
     //endregion
 
     //region Setters
-
 
     public void setAbilityPrice(int abilityPrice) {
         this.abilityPrice = abilityPrice;
@@ -208,6 +214,10 @@ public class Hos {
                 System.out.println("Nincs ehhez eleg aranyad!");
             }
         }
+    }
+
+    public void setBoughtMagic(Magic[] boughtMagic) {
+        this.boughtMagic = boughtMagic;
     }
 
     //endregion
