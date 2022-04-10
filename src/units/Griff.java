@@ -3,8 +3,6 @@ package units;
 
 
 public class Griff extends Unit{
-    static String pathToImg = "img/griff.jpg";
-
     private String unitName = "G";
 
     public Griff() {
@@ -15,9 +13,5 @@ public class Griff extends Unit{
         this.setHp(30);
         this.setSpeed(7);
         this.setPriority(15);
-    }
-
-    public String getPathToImg() {
-        return pathToImg;
     }
 }

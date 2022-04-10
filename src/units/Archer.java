@@ -2,8 +2,6 @@ package units;
 
 public class Archer extends Unit{
 
-    private static String pathToImg = "img/archer.png";
-
     private String unitName = "I";
 
     public Archer() {
@@ -16,7 +14,5 @@ public class Archer extends Unit{
         this.setPriority(9);
     }
 
-    public String getPathToImg() {
-        return pathToImg;
-    }
+
 }

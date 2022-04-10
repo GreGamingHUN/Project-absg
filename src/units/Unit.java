@@ -18,12 +18,7 @@ public class Unit {
 
     private int unitAmount = 1;
 
-    private String pathToImg;
-
     private String unitName;
-
-    private boolean selected = false;
-
 
     public Unit() {
 
@@ -33,7 +28,7 @@ public class Unit {
         this.setUnitAmount(unitAmount);
     }
 
-    public void normalTamadas(Unit enemy) {
+    public void attack(Unit enemy) {
         Random r = new Random();
         int dmgToEnemy = (int) ((r.nextInt(this.getMaxDmg()-this.getMinDmg()) + this.getMinDmg()) * (1 + (0.1 * this.getParentHos().getDmgUp())) -
                 (0.05 * enemy.getParentHos().getDefUp()));
@@ -87,14 +82,6 @@ public class Unit {
         return this.posY;
     }
 
-    public boolean isSelected() {
-        return this.selected;
-    }
-
-    public String getPathToImg() {
-        return this.pathToImg;
-    }
-
     //endregion
 
     //region Setters
@@ -142,14 +129,6 @@ public class Unit {
 
     public void setPosY(int posY) {
         this.posY = posY;
-    }
-
-    public void setSelected(boolean selected) {
-        this.selected = selected;
-    }
-
-    public void setPathToImg(String pathToImg) {
-        this.pathToImg = pathToImg;
     }
 
     //endregion

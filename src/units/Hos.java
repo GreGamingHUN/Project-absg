@@ -16,6 +16,7 @@ public class Hos {
     private int moral = 1;
     private int luck = 1 ;
 
+    //region Constructors
     public Hos() {
         this.balance = 1000;
     }
@@ -33,7 +34,7 @@ public class Hos {
                 break;
         }
     }
-
+    //endregion
 
     //region Getters
 
