@@ -1,8 +1,6 @@
 package units;
 
 public class Worker extends Unit{
-    static String pathToImg = "img/villager.jpg";
-
     private String unitName = "M";
 
     public Worker() {
@@ -13,9 +11,5 @@ public class Worker extends Unit{
         this.setHp(3);
         this.setSpeed(4);
         this.setPriority(8);
-    }
-
-    public String getPathToImg() {
-        return pathToImg;
     }
 }
