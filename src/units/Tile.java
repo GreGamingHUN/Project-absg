@@ -1,30 +1,12 @@
 package units;
 
-import javafx.scene.shape.Rectangle;
-import units.*;
-
-import static javafx.scene.paint.Color.rgb;
-
 public class Tile {
     Unit unitOnTile = null;
-    Rectangle tileRect = null;
     int posX, posY = -1;
 
 
 
-
-    public Tile(Rectangle tileRect, int posX, int posY) {
-        this.setTileRect(tileRect);
-        this.getTileRect().setOnMouseEntered(e -> {
-            this.tileRect.setFill(rgb(0, 0, 0));
-        });
-
-        this.getTileRect().setOnMouseExited(e -> {
-            this.tileRect.setFill(rgb(74, 207, 110));
-        });
-        this.getTileRect().setOnMouseClicked(e -> {
-            System.out.println(getPosX() + " " + getPosY());
-        });
+    public Tile(int posX, int posY) {
         this.posX = posX;
         this.posY = posY;
     }
@@ -35,14 +17,6 @@ public class Tile {
 
     public void setEmberOnTile(Unit unitOnTile) {
         this.unitOnTile = unitOnTile;
-    }
-
-    public Rectangle getTileRect() {
-        return this.tileRect;
-    }
-
-    public void setTileRect(Rectangle tileRect) {
-        this.tileRect = tileRect;
     }
 
     public int getPosX() {

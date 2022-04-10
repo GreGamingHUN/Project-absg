@@ -1,8 +1,5 @@
 package units;
 
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-
 import java.util.Random;
 
 public class Unit {
@@ -19,17 +16,21 @@ public class Unit {
     private int speed;
     private int priority;
 
-    private ImageView img;
+    private int unitAmount = 1;
+
+    private String pathToImg;
+
+    private String unitName;
+
+    private boolean selected = false;
+
 
     public Unit() {
+
     }
 
-    public Unit(int price, int minDmg, int hp, int speed, int priority, Hos parent) {
-        this.setPrice(price);
-        this.setMinDmg(minDmg);
-        this.setHp(hp);
-        this.setSpeed(speed);
-        this.setPriority(priority);
+    public Unit(int unitAmount) {
+        this.setUnitAmount(unitAmount);
     }
 
     public void normalTamadas(Unit enemy) {
@@ -40,6 +41,16 @@ public class Unit {
     }
 
     //region Getters
+
+
+    public int getUnitAmount() {
+        return this.unitAmount;
+    }
+
+    public String getUnitName() {
+        return this.unitName;
+    }
+
     public int getPrice() {
         return this.price;
     }
@@ -49,7 +60,7 @@ public class Unit {
     }
 
     public int getHp() {
-        return this.hp;
+        return this.hp * this.getUnitAmount();
     }
 
     public int getSpeed() {
@@ -76,13 +87,26 @@ public class Unit {
         return this.posY;
     }
 
-    public ImageView getImg() {
-        return this.img;
+    public boolean isSelected() {
+        return this.selected;
+    }
+
+    public String getPathToImg() {
+        return this.pathToImg;
     }
 
     //endregion
 
     //region Setters
+
+
+    public void setUnitAmount(int unitAmount) {
+        this.unitAmount = unitAmount;
+    }
+
+    public void setUnitName(String unitName) {
+        this.unitName = unitName;
+    }
 
     public void setPrice(int price) {
         this.price = price;
@@ -112,17 +136,20 @@ public class Unit {
         this.maxDmg = maxDmg;
     }
 
-
-    public void setImg(ImageView img) {
-        this.img = img;
-    }
-
     public void setPosX(int posX) {
         this.posX = posX;
     }
 
     public void setPosY(int posY) {
         this.posY = posY;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
+    public void setPathToImg(String pathToImg) {
+        this.pathToImg = pathToImg;
     }
 
     //endregion
