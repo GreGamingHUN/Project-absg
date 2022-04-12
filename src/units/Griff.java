@@ -3,10 +3,13 @@ package units;
 
 
 public class Griff extends Unit{
-    private String unitName = "G";
+    private String unitName = "Griff";
+    private String unitShort = "G";
 
-    public Griff() {
+    public Griff(int unitAmount) {
+        super(unitAmount);
         this.setUnitName(unitName);
+        this.setUnitShort(unitShort);
         this.setPrice(15);
         this.setMinDmg(5);
         this.setMaxDmg(10);

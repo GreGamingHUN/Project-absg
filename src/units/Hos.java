@@ -6,11 +6,13 @@ import java.util.Objects;
 import java.util.Scanner;
 
 public class Hos {
-    private Magic[] boughtMagic = new Magic[100];
+    private Magic[] boughtMagic = new Magic[3];
+    private Unit[] boughtUnits = new Unit[20];
     private int balance;
     private int mana;
 
     private int abilityPrice = 5;
+    private int tempAbilityPrice = 5;
 
     private int dmgUp = 1;
     private int defUp = 1;
@@ -40,6 +42,15 @@ public class Hos {
     //endregion
 
     //region Getters
+
+
+    public Unit[] getBoughtUnits() {
+        return this.boughtUnits;
+    }
+
+    public int getTempAbilityPrice() {
+        return this.tempAbilityPrice;
+    }
 
     public int getAbilityPrice() {
         return this.abilityPrice;
@@ -85,6 +96,14 @@ public class Hos {
 
     //region Setters
 
+    public void setBoughtUnits(Unit[] boughtUnits) {
+        this.boughtUnits = boughtUnits;
+    }
+
+    public void setTempAbilityPrice(int tempAbilityPrice) {
+        this.tempAbilityPrice = tempAbilityPrice;
+    }
+
     public void setAbilityPrice(int abilityPrice) {
         this.abilityPrice = abilityPrice;
     }
@@ -100,8 +119,8 @@ public class Hos {
     public void setDmgUp(int dmgUp) {
         int price = 0;
         for (int i = 0; i < dmgUp; i++) {
-            price += this.getAbilityPrice();
-            this.setAbilityPrice((int)Math.ceil(this.getAbilityPrice() * 1.1));
+            price += this.getTempAbilityPrice();
+            this.setTempAbilityPrice((int)Math.ceil(this.getTempAbilityPrice() * 1.1));
         }
         System.out.println("Ez " + price +" aranyba fog kerülni. Elfogadod? (y/n)");
         Scanner sc = new Scanner(System.in);
@@ -110,6 +129,7 @@ public class Hos {
             if (this.getBalance() - price >= 0) {
                 this.dmgUp += dmgUp;
                 this.setBalance(this.getBalance() - price);
+                this.setAbilityPrice(this.getTempAbilityPrice());
             } else {
                 System.out.println("Nincs ehhez eleg aranyad!");
             }

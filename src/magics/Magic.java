@@ -7,9 +7,18 @@ public class Magic {
     private int price;
     private int mana;
     private Hos source;
+    private int amount;
+
+    public Magic(int amount) {
+        this.amount = amount;
+    }
 
     //region Getters
 
+
+    public int getAmount() {
+        return this.amount;
+    }
 
     public String getName() {
         return this.name;
@@ -31,6 +40,10 @@ public class Magic {
 
     //region Setters
 
+
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
 
     public void setName(String name) {
         this.name = name;

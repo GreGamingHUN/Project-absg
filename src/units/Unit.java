@@ -19,10 +19,7 @@ public class Unit {
     private int unitAmount = 1;
 
     private String unitName;
-
-    public Unit() {
-
-    }
+    private String unitShort;
 
     public Unit(int unitAmount) {
         this.setUnitAmount(unitAmount);
@@ -37,6 +34,10 @@ public class Unit {
 
     //region Getters
 
+
+    public String getUnitShort() {
+        return this.unitShort;
+    }
 
     public int getUnitAmount() {
         return this.unitAmount;
@@ -86,6 +87,10 @@ public class Unit {
 
     //region Setters
 
+
+    public void setUnitShort(String unitShort) {
+        this.unitShort = unitShort;
+    }
 
     public void setUnitAmount(int unitAmount) {
         this.unitAmount = unitAmount;

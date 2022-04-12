@@ -1,5 +1,8 @@
 package scripts;
 
+import magics.Fireball;
+import magics.Lightning;
+import magics.Revive;
 import units.*;
 
 import java.io.IOException;
@@ -34,13 +37,21 @@ public class GameLogic {
         setUpGrid();
 
         while (gameState == 0) {
-            buyUnits();
+            preparePhase();
         }
         fightPhase();
     }
 
     public void fightPhase() {
         enemy = new Hos();
+        System.out.println("Fight phase started");
+
+        try
+        {
+            System.in.read();
+        }
+        catch(Exception e)
+        {}
     }
 
 
@@ -65,7 +76,7 @@ public class GameLogic {
             System.out.print(TEXT_GREEN + "|" + TEXT_RESET);
             for (int j = 0; j < gridSizeY; j++) {
                 if (tileArray[i][j].getEmberOnTile() != null) {
-                    System.out.print(" " + tileArray[i][j].getEmberOnTile().getUnitName() + " ");
+                    System.out.print(" " + tileArray[i][j].getEmberOnTile().getUnitShort() + " ");
                 } else {
                     System.out.print("   ");
                 }
@@ -75,137 +86,171 @@ public class GameLogic {
         }
     }
 
-    public void buyUnits() throws IOException, InterruptedException {
-        drawGrid();
-        System.out.println("Penzed = " + player.getBalance());
+    public void preparePhase() throws IOException, InterruptedException {
+        new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+        System.out.println("Penzed = " + player.getBalance() + "\n");
         System.out.println("Mit szeretnel tenni?");
-        System.out.println("1 - Munkas      2 arany/db");
-        System.out.println("2 - ijasz       6 arany/db");
-        System.out.println("3 - Griff      15 arany/db");
-        System.out.println("4 - Kepessegek fejlesztese");
-        System.out.println("5 - Varazslatok vasarlasa");
-        System.out.println("6 - Start");
-        System.out.println("7 - Kilepes\n\n");
-        System.out.println("Tulajdonsagok:");
-        System.out.println("Tamadas     " + player.getDmgUp());
-        System.out.println("Vedekezes   " + player.getDefUp());
-        System.out.println("Varazsero   " + player.getMagicUp());
-        System.out.println("Tudas       " + player.getKnowledge());
-        System.out.println("Moral       " + player.getMoral());
-        System.out.println("Szerencse   " + player.getLuck());
+        System.out.println("1 - Egysegek vasarlasa");
+        System.out.println("2 - Kepessegek fejlesztese");
+        System.out.println("3 - Varazslatok vasarlasa\n");
+        System.out.println("4 - Megvasarolt egysegek mutatasa\n");
+        System.out.println("5 - Start");
+        System.out.println("6 - Kilepes\n\n");
+        System.out.println("Tulajdonsagok:               Varazslatok");
+
+        //region get magic amounts
+        int lightningAmount = 0, fireballAmount = 0, reviveAmount = 0;
+
+        for (int i = 0; i < player.getBoughtMagic().length; i++) {
+            if (player.getBoughtMagic()[i] != null) {
+                switch (player.getBoughtMagic()[i].getName()) {
+                    case "lightning" -> lightningAmount = player.getBoughtMagic()[i].getAmount();
+                    case "fireball" -> fireballAmount = player.getBoughtMagic()[i].getAmount();
+                    case "revive" -> reviveAmount = player.getBoughtMagic()[i].getAmount();
+                }
+            }
+        }
+
+        //endregion
+
+        System.out.println("Tamadas:     " + player.getDmgUp()+     "               Villam:          " + lightningAmount);
+        System.out.println("Vedekezes:   " + player.getDefUp()+     "               Tuzlabda:        " + fireballAmount);
+        System.out.println("Varazsero:   " + player.getMagicUp()+   "               Feltamasztas:    " + reviveAmount);
+        System.out.println("Tudas:       " + player.getKnowledge());
+        System.out.println("Moral:       " + player.getMoral());
+        System.out.println("Szerencse:   " + player.getLuck());
         Scanner sc = new Scanner(System.in);
-        System.out.print("Opcio: ");
+        System.out.print("\nOpcio: ");
         int number = sc.nextInt();
 
         switch (number) {
+            case 1 -> buyUnit();
+            case 2 -> buyAbility();
+            case 3 -> buyMagic();
             case 4 -> {
-                buyAbility();
-                return;
-            }
-            case 5 -> {
-                buyMagic();
-                return;
-            }
-            case 6 -> {
-                for (int i = 0; i < gridSizeX; i++) {
-                    for (int j = 0; j < gridSizeY; j++) {
-                        if (tileArray[i][j].getEmberOnTile() != null) {
-                            gameState = 1;
-                            System.out.println("Kezdodhet a moka");
-                            return;
-                        }
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+                System.out.println("Egyseg neve        Egyseg merete");
+                for (int i = 0; i < player.getBoughtUnits().length; i++) {
+                    if (player.getBoughtUnits()[i] != null) {
+                        System.out.println(player.getBoughtUnits()[i].getUnitName() + "             " + player.getBoughtUnits()[i].getUnitAmount());
                     }
                 }
-                System.out.println("Eloszor tegyel le egy egyseget!");
-                try {
-                    System.in.read();
-                } catch (Exception e) {
-                }
-                return;
-            }
-            case 7 -> {
-                System.out.println("Biztos ki akarsz lepni a jatekbol? A nem mentett modositasok elvesznek! (y/n)");
                 Scanner scanner = new Scanner(System.in);
-                String answer = scanner.next();
-                if (Objects.equals(answer, "y") || Objects.equals(answer, "Y")) {
+                System.out.println("\n1 - Vissza");
+                int result = scanner.nextInt();
+                if (result == 1) {
+                    break;
+                }
+            }
+            case 5 -> {
+                gameState = 1;
+                placementPhase();
+            }
+            case 6 -> {
+                System.out.println("Biztos ki szeretnel lepni a jatekbol? (y/n)");
+                if (Objects.equals(sc.next(), "y") || Objects.equals(sc.next(), "Y")) {
                     System.exit(0);
-                } else {
-                    return;
                 }
             }
         }
+    }
 
-        int posX = -1;
-        int posY = -1;
+    public void placementPhase() throws IOException, InterruptedException {
+        for (int i = 0; i < player.getBoughtUnits().length; i++) {
+            drawGrid();
+            if (player.getBoughtUnits()[i] != null) {
+                System.out.println("\nHelyezd el ezt az egyseget a palyan: " +
+                        player.getBoughtUnits()[i].getUnitName() + "    " + player.getBoughtUnits()[i].getUnitAmount());
 
-        int unitAmount;
+                Scanner sc = new Scanner(System.in);
+                System.out.print("\nX pozicio (0-9):");
+                int posX = -1;
+                while (posX > 9 || posX < 0) {
+                    System.out.print("\nX pozicio (0-9):");
+                    posX = sc.nextInt();
+                }
+                player.getBoughtUnits()[i].setPosX(posX);
 
-        while (posX < 0 || posX > 9) {
-            System.out.println("Hova szeretned rakni?");
-            System.out.print("X (0-9): ");
-            posX = sc.nextInt();
-        }
+                System.out.println("Y pozicio (0-1):");
+                int posY = -1;
+                while (posY > 1 || posY < 0) {
+                    System.out.println("Y pozicio (0-1):");
+                    posY = sc.nextInt();
+                }
+                player.getBoughtUnits()[i].setPosY(posY);
 
-        while (posY < 0 || posY > 1) {
-            System.out.print("Y (0-1): ");
-            posY = sc.nextInt();
-        }
-
-        System.out.println("Hany egyseget akarsz lerakni?");
-        unitAmount = sc.nextInt();
-        System.out.println(unitAmount);
-        System.out.println(posX);
-        System.out.println(posY);
-
-        try
-        {
-            System.in.read();
-        }
-        catch(Exception e)
-        {}
-
-        if (tileArray[posX][posY].getEmberOnTile() != null) {
-            System.out.println("Ez a hely foglalt!");
-            try
-            {
-                System.in.read();
+                tileArray[player.getBoughtUnits()[i].getPosX()][player.getBoughtUnits()[i].getPosY()].
+                        setEmberOnTile(player.getBoughtUnits()[i]);
             }
-        catch(Exception e)
-            {}
+        }
+
+        System.out.println("\nMit szeretnel tenni?");
+        System.out.println("1 - Start");
+        System.out.println("2 - Kilepes");
+        System.out.print("Opcio: ");
+        Scanner sc = new Scanner(System.in);
+        if (sc.nextInt() == 1) {
             return;
         }
+    }
 
+    public void buyUnit() {
+        System.out.println("Penzed = " + player.getBalance() + "\n");
+        System.out.println("Mit szeretnel venni?");
+        System.out.println("1 - Munkas      2 arany/db");
+        System.out.println("2 - ijasz       6 arany/db");
+        System.out.println("3 - Griff      15 arany/db");
+        System.out.println("\nOpcio:");
+        Scanner sc = new Scanner(System.in);
 
+        int number = sc.nextInt();
+
+        System.out.println("\nHany darabot akarsz venni egy egysegbe?");
+
+        int amount = sc.nextInt();
+
+        int i;
         switch (number) {
-            case 1 -> {
-                tileArray[posX][posY].setEmberOnTile(new Worker());
-                if (player.getBalance() - tileArray[posX][posY].getEmberOnTile().getPrice() * tileArray[posX][posY].getEmberOnTile().getUnitAmount() < 0) {
-                    System.out.println("Nincs ehhez eleg aranyad!");
-                    tileArray[posX][posY].setEmberOnTile(null);
-                } else {
-                    player.setBalance(player.getBalance() - tileArray[posX][posY].getEmberOnTile().getPrice() * tileArray[posX][posY].getEmberOnTile().getUnitAmount());
+            case 1:
+                for (i = 0; i < player.getBoughtUnits().length; i++) {
+                    if (player.getBoughtUnits()[i] == null) {
+                        player.getBoughtUnits()[i] = new Worker(amount);
+                        if (player.getBoughtUnits()[i].getUnitAmount() * player.getBoughtUnits()[i].getPrice() > player.getBalance()) {
+                            System.out.println("Nincs eleg penzed erre!");
+                            player.getBoughtUnits()[i] = null;
+                        }
+                        break;
+                    }
                 }
-            }
-            case 2 -> {
-                tileArray[posX][posY].setEmberOnTile(new Archer());
-                if (player.getBalance() - tileArray[posX][posY].getEmberOnTile().getPrice() * tileArray[posX][posY].getEmberOnTile().getUnitAmount() < 0) {
-                    System.out.println("Nincs ehhez eleg aranyad!");
-                    tileArray[posX][posY].setEmberOnTile(null);
-                } else {
-                    player.setBalance(player.getBalance() - tileArray[posX][posY].getEmberOnTile().getPrice() * tileArray[posX][posY].getEmberOnTile().getUnitAmount());
+                player.setBalance(player.getBalance() - player.getBoughtUnits()[i].getUnitAmount() * player.getBoughtUnits()[i].getPrice());
+                break;
+            case 2:
+                for (i = 0; i < player.getBoughtUnits().length; i++) {
+                    if (player.getBoughtUnits()[i] == null) {
+                        player.getBoughtUnits()[i] = new Archer(amount);
+                        if (player.getBoughtUnits()[i].getUnitAmount() * player.getBoughtUnits()[i].getPrice() > player.getBalance()) {
+                            System.out.println("Nincs eleg penzed erre!");
+                            player.getBoughtUnits()[i] = null;
+                        }
+                        break;
+                    }
                 }
-            }
-            case 3 -> {
-                tileArray[posX][posY].setEmberOnTile(new Griff());
-                if (player.getBalance() - tileArray[posX][posY].getEmberOnTile().getPrice() * tileArray[posX][posY].getEmberOnTile().getUnitAmount() < 0) {
-                    System.out.println("Nincs ehhez eleg aranyad!");
-                    tileArray[posX][posY].setEmberOnTile(null);
-                } else {
-                    player.setBalance(player.getBalance() - tileArray[posX][posY].getEmberOnTile().getPrice() * tileArray[posX][posY].getEmberOnTile().getUnitAmount());
+                player.setBalance(player.getBalance() - player.getBoughtUnits()[i].getUnitAmount() * player.getBoughtUnits()[i].getPrice());
+                break;
+            case 3:
+                for (i = 0; i < player.getBoughtUnits().length; i++) {
+                    if (player.getBoughtUnits()[i] == null) {
+                        player.getBoughtUnits()[i] = new Griff(amount);
+                        if (player.getBoughtUnits()[i].getUnitAmount() * player.getBoughtUnits()[i].getPrice() > player.getBalance()) {
+                            System.out.println("Nincs eleg penzed erre!");
+                            player.getBoughtUnits()[i] = null;
+                        }
+                        break;
+                    }
                 }
-            }
+                player.setBalance(player.getBalance() - player.getBoughtUnits()[i].getUnitAmount() * player.getBoughtUnits()[i].getPrice());
+                break;
         }
-
     }
 
     public void buyAbility() throws IOException, InterruptedException {
@@ -252,22 +297,80 @@ public class GameLogic {
 
     }
 
-
     public void buyMagic() throws IOException, InterruptedException {
         new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
         System.out.println("Milyen varazslatot szeretnel venni?");
-        System.out.println("1 - Villam");
-        System.out.println("2 - Tuzlabda");
-        System.out.println("3 - Feltamasztas");
+        System.out.println("1 - Villam          60 arany/db     5 mana");
+        System.out.println("2 - Tuzlabda        120 arany/db    9 mana");
+        System.out.println("3 - Feltamasztas    120 arany/db    6 mana");
         System.out.println("4 - Vissza");
         System.out.print("Opcio: ");
         Scanner sc = new Scanner(System.in);
         int number = sc.nextInt();
+        System.out.println("Hany darabot szeretnel venni? (EGY VARAZSLATOT CSAK EGY ALKALOMMAL VASAROLHATSZ)");
+        int amount = sc.nextInt();
 
-        if (number == 1) {
-            for (int i = 0; i < player.getBoughtMagic().length; i++) {
+        switch (number) {
+            case 1:
+                for (int i = 0; i < player.getBoughtMagic().length; i++) {
+                    if (player.getBoughtMagic()[i] != null && player.getBoughtMagic()[i].getName() == "lightning") {
+                        System.out.println("Mar vettel ilyen varazslataot!");
+                        try
+                        {
+                            System.in.read();
+                        }
+                        catch(Exception e)
+                        {}
+                        return;
+                    }
 
-            }
+                    if (player.getBoughtMagic()[i] == null) {
+                        player.getBoughtMagic()[i] = new Lightning(amount);
+                        player.setBalance(player.getBalance() - player.getBoughtMagic()[i].getPrice() * amount);
+                        return;
+                    }
+                }
+                break;
+            case 2:
+                for (int i = 0; i < player.getBoughtMagic().length; i++) {
+                    if (player.getBoughtMagic()[i] != null && player.getBoughtMagic()[i].getName() == "fireball") {
+                        System.out.println("Mar vettel ilyen varazslataot!");
+                        try
+                        {
+                            System.in.read();
+                        }
+                        catch(Exception e)
+                        {}
+                        return;
+                    }
+
+                    if (player.getBoughtMagic()[i] == null) {
+                        player.getBoughtMagic()[i] = new Fireball(amount);
+                        player.setBalance(player.getBalance() - player.getBoughtMagic()[i].getPrice() * amount);
+                        return;
+                    }
+                }
+                break;
+            case 3:
+                for (int i = 0; i < player.getBoughtMagic().length; i++) {
+                    if (player.getBoughtMagic()[i] != null && player.getBoughtMagic()[i].getName() == "revive") {
+                        System.out.println("Mar vettel ilyen varazslataot!");
+                        try
+                        {
+                            System.in.read();
+                        }
+                        catch(Exception e)
+                        {}
+                        return;
+                    }
+
+                    if (player.getBoughtMagic()[i] == null) {
+                        player.getBoughtMagic()[i] = new Revive(amount);
+                        player.setBalance(player.getBalance() - player.getBoughtMagic()[i].getPrice() * amount);
+                        return;
+                    }
+                }
+                break;
         }
     }
 }

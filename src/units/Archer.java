@@ -2,10 +2,13 @@ package units;
 
 public class Archer extends Unit{
 
-    private String unitName = "I";
+    private String unitName = "Ijasz";
+    private String unitShort = "I";
 
-    public Archer() {
+    public Archer(int unitAmount) {
+        super(unitAmount);
         this.setUnitName(unitName);
+        this.setUnitShort(unitShort);
         this.setPrice(6);
         this.setMinDmg(2);
         this.setMaxDmg(4);
