@@ -10,9 +10,10 @@ public class Archer extends Unit{
         this.setUnitName(unitName);
         this.setUnitShort(unitShort);
         this.setPrice(6);
-        this.setMinDmg(2);
-        this.setMaxDmg(4);
-        this.setHp(7);
+        this.setMinDmg(2  * unitAmount);
+        this.setMaxDmg(4  * unitAmount);
+        this.setDefaultHp(7);
+        this.setHp(7  * unitAmount);
         this.setSpeed(4);
         this.setPriority(9 + parentHos.getMoral() - 1);
     }

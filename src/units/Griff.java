@@ -9,9 +9,10 @@ public class Griff extends Unit{
         this.setUnitName(unitName);
         this.setUnitShort(unitShort);
         this.setPrice(15);
-        this.setMinDmg(5);
-        this.setMaxDmg(10);
-        this.setHp(30);
+        this.setMinDmg(5  * unitAmount);
+        this.setMaxDmg(10  * unitAmount);
+        this.setDefaultHp(30);
+        this.setHp(30  * unitAmount);
         this.setSpeed(7);
         this.setPriority(15  + parentHos.getMoral() - 1);
     }
