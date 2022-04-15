@@ -7,7 +7,7 @@ import units.Unit;
 public class Lightning extends Magic {
 
     public Lightning() {
-        this.setName("lightning");
+        this.setName("Villam");
         this.setPrice(60);
         this.setMana(5);
     }

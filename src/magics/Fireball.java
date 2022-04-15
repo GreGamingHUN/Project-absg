@@ -5,7 +5,7 @@ import units.Unit;
 
 public class Fireball extends Magic {
     public Fireball() {
-        this.setName("fireball");
+        this.setName("Tuzlabda");
         this.setPrice(120);
         this.setMana(9);
     }
