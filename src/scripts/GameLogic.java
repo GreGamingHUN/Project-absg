@@ -762,6 +762,7 @@ public class GameLogic {
                     }
                     switch (player.getBoughtMagic()[result - 1].getName()) {
                         case "Villam":
+                            break;
                     }
                 } catch (InputMismatchException e) {
                     System.out.println("Helytelen input!");
