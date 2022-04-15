@@ -6,6 +6,7 @@ public class Unit {
 
     private int posX;
     private int posY;
+    private boolean selected = false;
 
     private Hos parentHos;
     //Core stats
@@ -21,7 +22,8 @@ public class Unit {
     private String unitName;
     private String unitShort;
 
-    public Unit(int unitAmount) {
+    public Unit(int unitAmount, Hos parentHos) {
+        this.setParentHos(parentHos);
         this.setUnitAmount(unitAmount);
     }
 
@@ -34,6 +36,10 @@ public class Unit {
 
     //region Getters
 
+
+    public boolean isSelected() {
+        return this.selected;
+    }
 
     public String getUnitShort() {
         return this.unitShort;
@@ -87,6 +93,10 @@ public class Unit {
 
     //region Setters
 
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
 
     public void setUnitShort(String unitShort) {
         this.unitShort = unitShort;

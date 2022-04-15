@@ -4,6 +4,8 @@ public class Tile {
     Unit unitOnTile = null;
     int posX, posY = -1;
 
+    private boolean canGohere = false;
+
 
 
     public Tile(int posX, int posY) {
@@ -13,6 +15,14 @@ public class Tile {
 
     public Unit getEmberOnTile() {
         return this.unitOnTile;
+    }
+
+    public boolean isCanGohere() {
+        return this.canGohere;
+    }
+
+    public void setCanGohere(boolean canGohere) {
+        this.canGohere = canGohere;
     }
 
     public void setEmberOnTile(Unit unitOnTile) {

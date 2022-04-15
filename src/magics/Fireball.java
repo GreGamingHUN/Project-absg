@@ -4,8 +4,7 @@ import scripts.GameLogic;
 import units.Unit;
 
 public class Fireball extends Magic {
-    public Fireball(int amount) {
-        super(amount);
+    public Fireball() {
         this.setName("fireball");
         this.setPrice(120);
         this.setMana(9);
