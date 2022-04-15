@@ -13,7 +13,7 @@ public class Hos {
     private Magic[] boughtMagic = new Magic[3];
     private Unit[] boughtUnits = new Unit[20];
     private int balance;
-    private int mana;
+    private int mana = 30;
 
     private int abilityPrice = 5;
     private int tempAbilityPrice = 5;
@@ -24,6 +24,13 @@ public class Hos {
     private int knowledge = 1;
     private int moral = 1;
     private int luck = 1 ;
+
+    private boolean usedAttackMagic = false;
+
+    public void attack(Unit target) {
+        target.setHp(target.getHp() - (this.getDmgUp() * 10));
+        target.getDamaged();
+    }
 
     //region Constructors
     public Hos() {
@@ -49,6 +56,10 @@ public class Hos {
 
     //region Getters
 
+
+    public boolean isUsedAttackMagic() {
+        return this.usedAttackMagic;
+    }
 
     public String getName() {
         return this.name;
@@ -117,6 +128,11 @@ public class Hos {
     //endregion
 
     //region Setters
+
+    public void setUsedAttackMagic(boolean usedAttackMagic) {
+        this.usedAttackMagic = usedAttackMagic;
+    }
+
     public void setBoughtLightning(boolean boughtLightning) {
         this.boughtLightning = boughtLightning;
     }
