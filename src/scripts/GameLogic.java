@@ -1,6 +1,7 @@
 package scripts;
 
 import com.sun.jdi.InvalidTypeException;
+import jdk.swing.interop.SwingInterOpUtils;
 import magics.Fireball;
 import magics.Lightning;
 import magics.Revive;
@@ -28,8 +29,8 @@ public class GameLogic {
     Hos player;
     Hos enemy;
 
-    static int gridSizeX = 10;
-    static int gridSizeY = 12;
+    static public int gridSizeX = 10;
+    static public int gridSizeY = 12;
     static public Tile[][] tileArray = new Tile[gridSizeX][gridSizeY];
     final int difficulty;
 
@@ -277,8 +278,10 @@ public class GameLogic {
         {}
     }
     public void fightPhase() throws IOException, InterruptedException {
+        player.setMana(player.getKnowledge() * 10);
         int round = 1;
         while (gameEnded == 0) {
+            player.setUsedAttackMagic(false);
             roundPlayer(round);
             roundEnemy();
             clearVisszatamadott();
@@ -288,6 +291,7 @@ public class GameLogic {
     public void roundPlayer(int round) throws IOException, InterruptedException {
         int number = -1;
         for (int i = 0; i < player.getBoughtUnits().length; i++) {
+            clearSelected();
             if (player.getBoughtUnits()[i] == null) {
                 return;
             }
@@ -302,10 +306,10 @@ public class GameLogic {
             }
             drawGrid();
             System.out.println(round + ". kor");
-            System.out.println("Egysegied");
+            System.out.println("Egysegied\tEletero\t\tEgysegek szama\t\tMana:" + player.getMana());
             for (int j = 0; j < player.getBoughtUnits().length; j++) {
                 if (player.getBoughtUnits()[j] != null) {
-                    System.out.println((player.getBoughtUnits()[j].isSelected() ? TEXT_GREEN + TEXT_BOLD : TEXT_RESET) +
+                    System.out.println((player.getBoughtUnits()[j].isSelected() ? TEXT_GREEN : TEXT_RESET) +
                             player.getBoughtUnits()[j].getUnitName() + "\t\t" +
                             player.getBoughtUnits()[j].getHp() + "\t\t" + player.getBoughtUnits()[j].getUnitAmount() + TEXT_RESET);
                 } else {
@@ -320,6 +324,7 @@ public class GameLogic {
                 System.out.println("\n\n\n4 - Hos tamadas");
                 System.out.println("5 - Varazslat hasznalata");
             }
+            System.out.println("\n6 - Egysegek adatainak megtekintese");
             Scanner sc = new Scanner(System.in);
             switch (sc.next()) {
                 case "1" -> {
@@ -327,7 +332,9 @@ public class GameLogic {
                     player.getBoughtUnits()[number].setSelected(false);
                 }
                 case "2" -> {
-                    fightUnit(player.getBoughtUnits()[number]);
+                    if (fightUnit(player.getBoughtUnits()[number]) == 1) {
+                        i--;
+                    }
                     player.getBoughtUnits()[number].setSelected(false);
                 }
 
@@ -346,6 +353,15 @@ public class GameLogic {
                     if (!player.isUsedAttackMagic()) {
                         playerMagic();
                     }
+                    i--;
+                }
+                case "6" -> {
+                    unitOverView();
+                    i--;
+                }
+                default -> {
+                    System.out.println("Invalid input!");
+                    Thread.sleep(1000);
                     i--;
                 }
             }
@@ -425,21 +441,35 @@ public class GameLogic {
             }
         }
     }
-    public void fightUnit(Unit target) throws IOException, InterruptedException {
-            drawGrid();
-            System.out.println("Valassz tamadast");
+    public int fightUnit(Unit target) throws IOException, InterruptedException {
+        drawGrid();
+        System.out.println("Valassz tamadast");
+        if ("Ijasz".equals(target.getUnitName())) {
+            System.out.println("1 - Loves");
+        } else {
             System.out.println("1 - Alap tamadas");
-            Scanner sc = new Scanner(System.in);
-            try {
-                switch (sc.nextInt()) {
-                    case 1:
-                        System.out.println("Alap tamadas comin' in");
+        }
+        Scanner sc = new Scanner(System.in);
+        try {
+            switch (sc.nextInt()) {
+                case 1:
+                    if (target.getUnitName() == "Ijasz") {
+                        if (archerAttack(target) == 1) {
+                            return 1;
+                        } else {
+                            return 0;
+                        }
+                    } else {
                         defaultAttack(target);
-                        break;
-                }
-            } catch (InputMismatchException e) {
-                System.out.println("Ervenytelen input");
+                        Thread.sleep(1000);
+                        return 0;
+                    }
             }
+        } catch (InputMismatchException e) {
+            System.out.println("Ervenytelen input");
+            Thread.sleep(1000);
+        }
+        return 1;
     }
     public void defaultAttack(Unit source) throws IOException, InterruptedException {
         for (int i = source.getPosX() - 1; i < source.getPosX() + 2; i++) {
@@ -466,6 +496,7 @@ public class GameLogic {
                     if (tileArray[posX][posY].getEmberOnTile().getHp() <= 0) {
                         tileArray[posX][posY].setEmberOnTile(null);
                     }
+                    tileArray[posX][posY].getEmberOnTile().getDamaged(source);
                 }
                 break;
             } catch (InputMismatchException e) {
@@ -483,7 +514,57 @@ public class GameLogic {
 
         }
     }
-    public void buyUnit() {
+    public int archerAttack(Unit source) throws IOException, InterruptedException {
+        Scanner sc = new Scanner(System.in);
+        int posX, posY;
+        for (int i = 0; i < gridSizeX; i++) {
+            for (int j = 0; j < gridSizeY; j++) {
+                if (tileArray[i][j].getEmberOnTile() != null && tileArray[i][j].getEmberOnTile().getParentHos() == enemy) {
+                    tileArray[i][j].getEmberOnTile().setSelected(true);
+                }
+            }
+        }
+        for (int i = source.getPosX() -1; i < source.getPosX() + 2; i++) {
+            if (i >= gridSizeX || i < 0) {
+                continue;
+            }
+            for (int j = source.getPosY() - 1; j < source.getPosY() + 2; j++) {
+                if (j >= gridSizeY || j < 0) {
+                    continue;
+                }
+                if (tileArray[i][j].getEmberOnTile() != null && tileArray[i][j].getEmberOnTile().getParentHos() == enemy) {
+                    System.out.println("Nem tamadhatsz, mivel egy ellenseges egyseg a kozelben van!");
+                    Thread.sleep(1000);
+                    return 1;
+                }
+            }
+        }
+        while (true) {
+            drawGrid();
+            System.out.println("Melyik egysegre szeretnel loni?");
+            System.out.println("X (0-9):");
+            try {
+                posX = sc.nextInt();
+                System.out.println("Y (0-11):");
+                posY = sc.nextInt();
+                if (tileArray[posX][posY].getEmberOnTile() != null &&
+                        tileArray[posX][posY].getEmberOnTile().getParentHos() == enemy) {
+                    source.attack(tileArray[posX][posY].getEmberOnTile());
+                    tileArray[posX][posY].getEmberOnTile().getDamaged();
+                    if (tileArray[posX][posY].getEmberOnTile().getHp() <= 0) {
+                        tileArray[posX][posY].setEmberOnTile(null);
+                    }
+                    return 0;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Ervenytelen input");
+                Thread.sleep(1000);
+            }
+        }
+    }
+
+    public void buyUnit() throws IOException, InterruptedException {
+        new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
         System.out.println("Penzed = " + player.getBalance() + "\n");
         System.out.println("Mit szeretnel venni?");
         System.out.println("1 - Munkas      2 arany/db");
@@ -541,7 +622,6 @@ public class GameLogic {
                 break;
         }
     }
-
     public void buyAbility() throws IOException, InterruptedException {
         Scanner sc = new Scanner(System.in);
 
@@ -613,7 +693,6 @@ public class GameLogic {
         }
 
     }
-
     public void buyMagic() throws IOException, InterruptedException {
         new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
         System.out.println("Milyen varazslatot szeretnel venni?");
@@ -650,7 +729,7 @@ public class GameLogic {
                     }
 
                     if (player.getBoughtMagic()[i] == null) {
-                        player.getBoughtMagic()[i] = new Lightning();
+                        player.getBoughtMagic()[i] = new Lightning(player);
                         player.setBalance(player.getBalance() - player.getBoughtMagic()[i].getPrice());
                         player.setBoughtLightning(true);
                         return;
@@ -671,7 +750,7 @@ public class GameLogic {
                     }
 
                     if (player.getBoughtMagic()[i] == null) {
-                        player.getBoughtMagic()[i] = new Fireball();
+                        player.getBoughtMagic()[i] = new Fireball(player);
                         player.setBalance(player.getBalance() - player.getBoughtMagic()[i].getPrice());
                         player.setBoughtFireball(true);
                         return;
@@ -692,7 +771,7 @@ public class GameLogic {
                     }
 
                     if (player.getBoughtMagic()[i] == null) {
-                        player.getBoughtMagic()[i] = new Revive();
+                        player.getBoughtMagic()[i] = new Revive(player);
                         player.setBalance(player.getBalance() - player.getBoughtMagic()[i].getPrice());
                         player.setBoughtRevive(true);
                         return;
@@ -762,7 +841,14 @@ public class GameLogic {
                     }
                     switch (player.getBoughtMagic()[result - 1].getName()) {
                         case "Villam":
-                            break;
+                            useLightning();
+                            return;
+                        case "Tuzlabda":
+                            useFireball();
+                            return;
+                        case "Feltamasztas":
+                            userRevive();
+                            return;
                     }
                 } catch (InputMismatchException e) {
                     System.out.println("Helytelen input!");
@@ -771,6 +857,212 @@ public class GameLogic {
             }
         }
     }
+    public void useLightning() throws IOException, InterruptedException {
+        int posX, posY;
+
+        for (int i = 0; i < gridSizeX; i++) {
+            for (int j = 0; j < gridSizeY; j++) {
+                if (tileArray[i][j].getEmberOnTile() != null && tileArray[i][j].getEmberOnTile().getParentHos() == enemy) {
+                    tileArray[i][j].getEmberOnTile().setSelected(true);
+                }
+            }
+        }
+
+        Scanner sc = new Scanner(System.in);
+        while (true) {
+            drawGrid();
+            System.out.println("Varazslat: Villam");
+            System.out.println("Melyik egyseget szeretned megtamadni?");
+            try {
+                System.out.println("X (0-9):");
+                posX = sc.nextInt();
+                if (posX > 9 || posX < 0) {
+                    System.out.println("Helytelen input!");
+                    Thread.sleep(1000);
+                    continue;
+                }
+                System.out.println("Y (0-11)");
+                posY = sc.nextInt();
+                if (posY > 11 || posY < 0) {
+                    System.out.println("Helytelen input!");
+                    Thread.sleep(1000);
+                    continue;
+                }
+                if (tileArray[posX][posY].getEmberOnTile() != null && tileArray[posX][posY].getEmberOnTile().getParentHos()
+                        == enemy && tileArray[posX][posY].getEmberOnTile().isSelected()) {
+                    for (int i = 0; i < player.getBoughtMagic().length; i++) {
+                        if (player.getBoughtMagic()[i] != null && player.getBoughtMagic()[i].getName() == "Villam") {
+                            if (player.getMana() - player.getBoughtMagic()[i].getMana() < 0) {
+                                System.out.println("Nincs ehhez eleg manad!");
+                                Thread.sleep(1000);
+                                return;
+                            }
+                            System.out.println(tileArray[posX][posY].getEmberOnTile().getHp());
+                            player.getBoughtMagic()[i].attack(player, tileArray[posX][posY].getEmberOnTile());
+                            tileArray[posX][posY].getEmberOnTile().getDamaged();
+                            System.out.println(tileArray[posX][posY].getEmberOnTile().getHp());
+                            if (tileArray[posX][posY].getEmberOnTile().getHp() <= 0) {
+                                tileArray[posX][posY].setEmberOnTile(null);
+                            }
+                            player.setUsedAttackMagic(true);
+                            return;
+                        } else {
+                            System.out.println("ide hogy kerultel?");
+                            try {
+                                System.in.read();
+                            } catch (Exception e) {
+
+                            }
+                        }
+
+                    }
+                } else {
+                    System.out.println("Itt nem tamadhatsz!");
+                    try {
+                        System.in.read();
+                    } catch (Exception e) {
+
+                    }
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Helytelen input!");
+                sc.nextLine();
+                Thread.sleep(1000);
+            }
+        }
+    }
+    public void useFireball() throws IOException, InterruptedException {
+        clearSelected();
+        Scanner sc = new Scanner(System.in);
+        int posX, posY;
+        while (true) {
+            drawGrid();
+            System.out.println("Hova szeretned dobni a tuzlabdat?");
+            System.out.println("X (0-9):");
+            try {
+                posX = sc.nextInt();
+                System.out.println("Y (0-11):");
+                posY = sc.nextInt();
+                try {
+                    for (int i = posX - 1; i < posX + 2; i++) {
+                        if (i >=gridSizeX || i < 0) {
+                            continue;
+                        }
+                        for (int j = posY - 1; j < posY + 2; j++) {
+                            if (j >=gridSizeY || j < 0) {
+                                continue;
+                            }
+                            if (tileArray[i][j].getEmberOnTile() != null) {
+                                tileArray[i][j].getEmberOnTile().setSelected(true);
+                            }
+                        }
+                    }
+                    drawGrid();
+                    System.out.println("Ezeket az egysegeket fogja sebzes erni. Biztos vagy benne? (y/n)");
+                    switch (sc.next()) {
+                        case "y":
+                            for (int k = 0; k < player.getBoughtUnits().length; k++) {
+                                if (player.getBoughtMagic()[k] != null &&
+                                        player.getBoughtMagic()[k].getName() == "Tuzlabda") {
+                                    player.getBoughtMagic()[k].attack(player, tileArray[posX][posY].getEmberOnTile());
+                                    player.setUsedAttackMagic(true);
+                                    return;
+                                }
+                            }
+                    }
+                } catch (ArrayIndexOutOfBoundsException ignored) {
+
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Helytelen input!");
+            }
+        }
+    }
+    public void userRevive() throws IOException, InterruptedException {
+        Scanner sc = new Scanner(System.in);
+        int posX, posY;
+        for (int i = 0; i < gridSizeX; i++) {
+            for (int j = 0; j < gridSizeY; j++) {
+                if (tileArray[i][j].getEmberOnTile() != null && tileArray[i][j].getEmberOnTile().getParentHos() == player) {
+                    tileArray[i][j].getEmberOnTile().setSelected(true);
+                }
+            }
+        }
+        while (true) {
+            drawGrid();
+            System.out.println("Feltamasztas");
+            System.out.println("Melyik egysegre szeretned hasznalni?");
+            System.out.println("X (0-9):");
+            try {
+                posX = sc.nextInt();
+                System.out.println("Y (0-11):");
+                posY = sc.nextInt();
+                if (tileArray[posX][posY].getEmberOnTile() != null && tileArray[posX][posY].getEmberOnTile().isSelected()) {
+                    for (int i = 0; i < player.getBoughtMagic().length; i++) {
+                        if (player.getBoughtMagic()[i] != null && player.getBoughtMagic()[i].getName() == "Feltamasztas") {
+                            if (player.getMana() - player.getBoughtMagic()[i].getMana() >= 0) {
+                                player.getBoughtMagic()[i].attack(player, tileArray[posX][posY].getEmberOnTile());
+                                player.setMana(player.getMana() - player.getBoughtMagic()[i].getMana());
+                                return;
+                            } else {
+                                System.out.println("Nincs eleg manad a varazslathoz!");
+                            }
+                        }
+                    }
+                } else {
+                    System.out.println("Itt nem hasznalhatod a varazslatot!");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Helytelen input!");
+            }
+
+        }
+    }
+    public void unitOverView() throws IOException, InterruptedException {
+        clearSelected();
+        Scanner sc = new Scanner(System.in);
+        int posX, posY;
+        Unit focusedUnit;
+        while (true) {
+            drawGrid();
+            System.out.println("Melyik egyseg adatait szeretned megtekinteni?");
+            System.out.println("X (0-9):");
+            try {
+                posX = sc.nextInt();
+                System.out.println("Y (0-11):");
+                posY = sc.nextInt();
+                if (tileArray[posX][posY].getEmberOnTile() != null) {
+                    while (true) {
+                        focusedUnit = tileArray[posX][posY].getEmberOnTile();
+                        focusedUnit.setSelected(true);
+                        drawGrid();
+                        System.out.println("Egyseg tipusa:\t\t" + focusedUnit.getUnitName());
+                        System.out.println("Egyseg eletereje:\t" + focusedUnit.getHp());
+                        System.out.println("Egysegek szama a mezon:\t" + focusedUnit.getUnitAmount());
+                        System.out.println("Egyseg minimum sebzese:\t" + focusedUnit.getMinDmg());
+                        System.out.println("Egyseg maximum sebzese:\t" + focusedUnit.getMaxDmg());
+                        System.out.println("\n1 - Vissza");
+                        try {
+                            if (sc.nextInt() ==  1) {
+                                return;
+                            }
+                        } catch (InputMismatchException exception) {
+                            System.out.println("Helytelen input!");
+                        }
+                    }
+                }
+                else {
+                    System.out.println("Ezen a helyen nincs egyseg!");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Helytelen input!");
+                sc.nextLine();
+            }
+        }
+
+
+    }
+
     public void clearVisszatamadott() {
         for (int i = 0; i < gridSizeX; i++) {
             for (int j = 0; j < gridSizeY; j++) {
@@ -836,6 +1128,15 @@ public class GameLogic {
                 enemy.setDefUp(3);
                 enemy.setMagicUp(2);
 
+            }
+        }
+    }
+    public void clearSelected() {
+        for (int i = 0; i < gridSizeX; i++) {
+            for (int j = 0; j < gridSizeY; j++) {
+                if (tileArray[i][j].getEmberOnTile() != null) {
+                    tileArray[i][j].getEmberOnTile().setSelected(false);
+                }
             }
         }
     }

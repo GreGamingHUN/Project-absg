@@ -1,19 +1,28 @@
 package magics;
 
 import units.Hos;
+import units.Unit;
 
 public class Magic {
     private String name;
+    private Hos parentHos;
     private int price;
     private int mana;
     private Hos source;
 
-    public Magic() {
+    public Magic(Hos parentHos) {
+        this.setParentHos(parentHos);
+    }
+
+    public void attack(Hos source, Unit target) {
 
     }
 
     //region Getters
 
+    public Hos getParentHos() {
+        return this.parentHos;
+    }
 
     public String getName() {
         return this.name;
@@ -35,6 +44,10 @@ public class Magic {
 
     //region Setters
 
+
+    public void setParentHos(Hos parentHos) {
+        this.parentHos = parentHos;
+    }
 
     public void setName(String name) {
         this.name = name;

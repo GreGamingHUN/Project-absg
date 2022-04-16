@@ -11,10 +11,13 @@ public class Unit {
     private Hos parentHos;
     //Core stats
     private int price;
+    private int defMinDmg;
     private int minDmg;
+    private int defMaxDmg;
     private int maxDmg;
     private int defaultHp;
     private int hp;
+    private int maxHp;
     private int speed;
     private int priority;
 
@@ -36,27 +39,51 @@ public class Unit {
         System.out.println(dmgToEnemy);
         enemy.setHp(enemy.getHp() - dmgToEnemy);
         System.out.println(enemy.getHp());
-        enemy.getDamaged(this);
     }
 
     public void getDamaged (Unit target) {
         Random r = new Random();
-        this.setUnitAmount(hp/defaultHp);
-        this.setMinDmg(this.getMinDmg()/this.getUnitAmount());
-        this.setMaxDmg(this.getMaxDmg()/this.getUnitAmount());
+        if (this.getHp() <= 0) {
+            this.setUnitAmount(0);
+            return;
+        }
+        double newHp= hp/defaultHp;
+        this.setUnitAmount((int)Math.floor(newHp));
+        this.setMinDmg(this.getDefMinDmg() * this.getUnitAmount());
+        this.setMaxDmg(this.getDefMaxDmg() * this.getUnitAmount());
         if (this.getHp() > 0 && !this.isVisszatamadott()) {
             target.setHp((int)(target.getHp() - (r.nextInt(this.getMinDmg(), this.getMaxDmg() + 1)) * 0.05));
         }
     }
 
     public void getDamaged() {
-        this.setUnitAmount(hp/defaultHp);
-        this.setMinDmg(this.getMinDmg()/this.getUnitAmount());
-        this.setMaxDmg(this.getMaxDmg()/this.getUnitAmount());
+        if (this.getHp() <= 0) {
+           this.setUnitAmount(0);
+           return;
+        }
+        double newHp= hp/defaultHp;
+        if (newHp < 1) {
+            newHp = 1;
+        }
+        this.setUnitAmount((int)Math.ceil(newHp));
+        this.setMinDmg(this.getDefMinDmg() * this.getUnitAmount());
+        this.setMaxDmg(this.getDefMaxDmg() * this.getUnitAmount());
     }
 
     //region Getters
 
+
+    public int getDefMinDmg() {
+        return this.defMinDmg;
+    }
+
+    public int getDefMaxDmg() {
+        return this.defMaxDmg;
+    }
+
+    public int getMaxHp() {
+        return this.maxHp;
+    }
 
     public boolean isVisszatamadott() {
         return this.visszatamadott;
@@ -109,6 +136,18 @@ public class Unit {
 
     //region Setters
 
+
+    public void setDefMinDmg(int defMinDmg) {
+        this.defMinDmg = defMinDmg;
+    }
+
+    public void setDefMaxDmg(int defMaxDmg) {
+        this.defMaxDmg = defMaxDmg;
+    }
+
+    public void setMaxHp(int maxHp) {
+        this.maxHp = maxHp;
+    }
 
     public void setVisszatamadott(boolean visszatamadott) {
         this.visszatamadott = visszatamadott;

@@ -10,9 +10,12 @@ public class Worker extends Unit{
         this.setUnitShort(unitShort);
         this.setPrice(2);
         this.setMinDmg(1  * unitAmount);
-        this.setMaxDmg(1  * unitAmount);
+        this.setDefMinDmg(1  * unitAmount);
+        this.setMaxDmg(1);
+        this.setDefMaxDmg(1);
         this.setDefaultHp(3);
         this.setHp(3 * unitAmount);
+        this.setMaxHp(this.getHp());
         this.setSpeed(4);
         this.setPriority(8  + parentHos.getMoral() - 1);
     }
