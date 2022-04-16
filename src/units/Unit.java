@@ -35,7 +35,12 @@ public class Unit {
 
     public void attack(Unit enemy) {
         Random r = new Random();
-        int dmgToEnemy = (int)((1 - enemy.getParentHos().getDefUp() * 0.05) * ((this.getParentHos().getDmgUp() + 1) * r.nextInt(this.getMinDmg(), this.getMaxDmg() + 1)));
+        int dmgToEnemy;
+        if (r.nextInt(1, 101) <= this.getParentHos().getLuck() * 5) {
+            dmgToEnemy = 2 * ((int)((1 - enemy.getParentHos().getDefUp() * 0.05) * ((this.getParentHos().getDmgUp() + 1) * r.nextInt(this.getMinDmg(), this.getMaxDmg() + 1))));
+        } else {
+            dmgToEnemy = (int)((1 - enemy.getParentHos().getDefUp() * 0.05) * ((this.getParentHos().getDmgUp() + 1) * r.nextInt(this.getMinDmg(), this.getMaxDmg() + 1)));
+        }
         System.out.println(dmgToEnemy);
         enemy.setHp(enemy.getHp() - dmgToEnemy);
         System.out.println(enemy.getHp());
@@ -48,11 +53,11 @@ public class Unit {
             return;
         }
         double newHp= hp/defaultHp;
-        this.setUnitAmount((int)Math.floor(newHp));
+        this.setUnitAmount((int)Math.ceil(newHp) + 1);
         this.setMinDmg(this.getDefMinDmg() * this.getUnitAmount());
         this.setMaxDmg(this.getDefMaxDmg() * this.getUnitAmount());
         if (this.getHp() > 0 && !this.isVisszatamadott()) {
-            target.setHp((int)(target.getHp() - (r.nextInt(this.getMinDmg(), this.getMaxDmg() + 1)) * 0.05));
+            target.setHp((int)(target.getHp() - (r.nextInt(this.getMinDmg(), this.getMaxDmg() + 1)) * 0.5));
         }
     }
 
@@ -65,7 +70,7 @@ public class Unit {
         if (newHp < 1) {
             newHp = 1;
         }
-        this.setUnitAmount((int)Math.ceil(newHp));
+        this.setUnitAmount((int)Math.ceil(newHp) + 1);
         this.setMinDmg(this.getDefMinDmg() * this.getUnitAmount());
         this.setMaxDmg(this.getDefMaxDmg() * this.getUnitAmount());
     }

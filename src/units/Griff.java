@@ -1,5 +1,7 @@
 package units;
 
+import java.util.Random;
+
 public class Griff extends Unit{
     private String unitName = "Griff";
     private String unitShort = "G";
@@ -18,5 +20,21 @@ public class Griff extends Unit{
         this.setMaxHp(this.getHp());
         this.setSpeed(7);
         this.setPriority(15  + parentHos.getMoral() - 1);
+    }
+
+    @Override
+    public void getDamaged (Unit target) {
+        Random r = new Random();
+        if (this.getHp() <= 0) {
+            this.setUnitAmount(0);
+            return;
+        }
+        double newHp= this.getHp()/this.getDefaultHp();
+        this.setUnitAmount((int)Math.floor(newHp));
+        this.setMinDmg(this.getDefMinDmg() * this.getUnitAmount());
+        this.setMaxDmg(this.getDefMaxDmg() * this.getUnitAmount());
+        if (this.getHp() > 0) {
+            target.setHp((int)(target.getHp() - (r.nextInt(this.getMinDmg(), this.getMaxDmg() + 1)) * 0.05));
+        }
     }
 }
