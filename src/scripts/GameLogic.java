@@ -65,7 +65,9 @@ public class GameLogic {
     public void  drawGrid() throws IOException, InterruptedException {
         new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
         for (int i = 0; i < gridSizeX; i++) {
-
+            if (i == 0) {
+                System.out.println("     0   1   2   3   4   5   6   7   8   9   10  11");
+            }
             if (i < 10) {
                 System.out.print(i + "  ");
             } else {
@@ -174,12 +176,11 @@ public class GameLogic {
                         player.getBoughtUnits()[i].getUnitName() + "    " + player.getBoughtUnits()[i].getUnitAmount());
 
                 Scanner sc = new Scanner(System.in);
-                int posX = -1;
-
-                while (posX > 9 || posX < 0) {
+                int posX = -1, posY = -1;
+                while (posY > 1 || posY < 0) {
                     try {
-                        System.out.print("\nX pozicio (0-9):");
-                        posX = sc.nextInt();
+                        System.out.print("\nX pozicio (0-1):");
+                        posY = sc.nextInt();
                         break;
                     } catch (InputMismatchException e) {
                         System.out.println("Ervenytelen input!");
@@ -187,12 +188,10 @@ public class GameLogic {
                         Thread.sleep(1000);
                     }
                 }
-
-                int posY = -1;
-                while (posY > 1 || posY < 0) {
+                while (posX > 9 || posX < 0) {
                     try {
-                        System.out.println("Y pozicio (0-1):");
-                        posY = sc.nextInt();
+                        System.out.println("Y pozicio (0-9):");
+                        posX = sc.nextInt();
                         break;
                     } catch (InputMismatchException e) {
                         System.out.println("Ervenytelen input!");
@@ -464,7 +463,7 @@ public class GameLogic {
         {}
     }
     public void moveUnit(Unit target) throws IOException, InterruptedException {
-        int posX = -1, posY = -1;
+
         for (int i = 0; i < gridSizeX; i++) {
             for (int j = 0; j < gridSizeY; j++) {
                 if (tileArray[i][j].getEmberOnTile() == null) {
@@ -481,13 +480,14 @@ public class GameLogic {
         Scanner sc = new Scanner(System.in);
         while (true) {
             try {
-                while (posX > 9 || posX < 0) {
-                    System.out.println("X: (0-9)");
-                    posX = sc.nextInt();
-                }
+                int posX = -1, posY = -1;
                 while (posY > 11 || posY < 0) {
-                    System.out.println("Y: (0-11)");
+                    System.out.println("X: (0-11)");
                     posY = sc.nextInt();
+                }
+                while (posX > 9 || posX < 0) {
+                    System.out.println("Y: (0-9)");
+                    posX = sc.nextInt();
                 }
                 if (!tileArray[posX][posY].isCanGohere()) {
                     System.out.println("Erre nem mehetsz!");
@@ -554,7 +554,6 @@ public class GameLogic {
         return 1;
     }
     public void defaultAttack(Unit source) throws IOException, InterruptedException {
-        int posX = -1, posY = -1;
         for (int i = source.getPosX() - 1; i < source.getPosX() + 2; i++) {
             for (int j = source.getPosY() - 1; j < source.getPosY() + 2; j++) {
                 if (tileArray[i][j].getEmberOnTile() != null && tileArray[i][j].getEmberOnTile().getParentHos() == enemy) {
@@ -564,16 +563,17 @@ public class GameLogic {
         }
         while (true) {
             try {
+                int posX = -1, posY = -1;
                 drawGrid();
                 System.out.println("Hol szeretnel tamadni?");
                 Scanner sc = new Scanner(System.in);
-                while (posX > 9 || posX < 0) {
-                    System.out.println("X (0-9)");
-                    posX = sc.nextInt();
-                }
                 while (posY > 11 || posY < 0) {
-                    System.out.println("Y (0-11)");
+                    System.out.println("X: (0-11)");
                     posY = sc.nextInt();
+                }
+                while (posX > 9 || posX < 0) {
+                    System.out.println("Y: (0-9)");
+                    posX = sc.nextInt();
                 }
                 if (tileArray[posX][posY].getEmberOnTile() != null && tileArray[posX][posY].getEmberOnTile().getParentHos()
                         == enemy && tileArray[posX][posY].getEmberOnTile().isSelected()) {
@@ -602,7 +602,6 @@ public class GameLogic {
     }
     public int archerAttack(Unit source) throws IOException, InterruptedException {
         Scanner sc = new Scanner(System.in);
-        int posX = -1, posY = -1;
         for (int i = 0; i < gridSizeX; i++) {
             for (int j = 0; j < gridSizeY; j++) {
                 if (tileArray[i][j].getEmberOnTile() != null && tileArray[i][j].getEmberOnTile().getParentHos() == enemy) {
@@ -629,13 +628,14 @@ public class GameLogic {
             drawGrid();
             System.out.println("Melyik egysegre szeretnel loni?");
             try {
-                while (posX > 9 || posX < 0) {
-                    System.out.println("X (0-9):");
-                    posX = sc.nextInt();
-                }
-                while (posY > 9 || posY < 0) {
-                    System.out.println("Y (0-11):");
+                int posX = -1, posY = -1;
+                while (posY > 11 || posY < 0) {
+                    System.out.println("X: (0-11)");
                     posY = sc.nextInt();
+                }
+                while (posX > 9 || posX < 0) {
+                    System.out.println("Y: (0-9)");
+                    posX = sc.nextInt();
                 }
                 if (tileArray[posX][posY].getEmberOnTile() != null &&
                         tileArray[posX][posY].getEmberOnTile().getParentHos() == enemy) {
@@ -872,7 +872,6 @@ public class GameLogic {
     }
 
     public void playerAttack() throws IOException, InterruptedException {
-        int posX = -1, posY = -1;
         for (int i = 0; i < gridSizeX; i++) {
             for (int j = 0; j < gridSizeY; j++) {
                 if (tileArray[i][j].getEmberOnTile() != null && tileArray[i][j].getEmberOnTile().getParentHos() == enemy) {
@@ -885,15 +884,16 @@ public class GameLogic {
 
         while (true) {
             try {
+                int posX = -1, posY = -1;
                 drawGrid();
                 System.out.println("Melyik egyseget szeretned megtamadni?");
-                while (posX > 9 || posX < 0) {
-                    System.out.println("X (0-9)");
-                    posX = sc.nextInt();
-                }
                 while (posY > 11 || posY < 0) {
-                    System.out.println("Y (0-11)");
+                    System.out.println("X: (0-11)");
                     posY = sc.nextInt();
+                }
+                while (posX > 9 || posX < 0) {
+                    System.out.println("Y: (0-9)");
+                    posX = sc.nextInt();
                 }
                 if (tileArray[posX][posY].getEmberOnTile() != null && tileArray[posX][posY].getEmberOnTile().getParentHos() == enemy && tileArray[posX][posY].getEmberOnTile().isSelected()) {
                     player.attack(tileArray[posX][posY].getEmberOnTile());
@@ -954,7 +954,7 @@ public class GameLogic {
         }
     }
     public void useLightning() throws IOException, InterruptedException {
-        int posX = -1, posY = -1;
+
 
         for (int i = 0; i < gridSizeX; i++) {
             for (int j = 0; j < gridSizeY; j++) {
@@ -970,13 +970,14 @@ public class GameLogic {
             System.out.println("Varazslat: Villam");
             System.out.println("Melyik egyseget szeretned megtamadni?");
             try {
-                while (posX > 9 || posX < 0) {
-                    System.out.println("X (0-9):");
-                    posX = sc.nextInt();
+                int posX = -1, posY = -1;
+                while (posY > 11 || posY < 0) {
+                    System.out.println("X: (0-11)");
+                    posY = sc.nextInt();
                 }
                 while (posX > 9 || posX < 0) {
-                    System.out.println("Y (0-11)");
-                    posY = sc.nextInt();
+                    System.out.println("Y: (0-9)");
+                    posX = sc.nextInt();
                 }
                 if (tileArray[posX][posY].getEmberOnTile() != null && tileArray[posX][posY].getEmberOnTile().getParentHos()
                         == enemy && tileArray[posX][posY].getEmberOnTile().isSelected()) {
@@ -1025,18 +1026,19 @@ public class GameLogic {
     public void useFireball() throws IOException, InterruptedException {
         clearSelected();
         Scanner sc = new Scanner(System.in);
-        int posX = -1, posY = -1;
+
         while (true) {
             drawGrid();
             System.out.println("Hova szeretned dobni a tuzlabdat?");
             try {
-                while (posX > 9 || posX < 0) {
-                    System.out.println("X (0-9):");
-                    posX = sc.nextInt();
-                }
+                int posX = -1, posY = -1;
                 while (posY > 11 || posY < 0) {
-                    System.out.println("Y (0-11):");
+                    System.out.println("X: (0-11)");
                     posY = sc.nextInt();
+                }
+                while (posX > 9 || posX < 0) {
+                    System.out.println("Y: (0-9)");
+                    posX = sc.nextInt();
                 }
                 try {
                     for (int i = posX - 1; i < posX + 2; i++) {
@@ -1081,7 +1083,7 @@ public class GameLogic {
     }
     public void userRevive() throws IOException, InterruptedException {
         Scanner sc = new Scanner(System.in);
-        int posX = -1, posY = -1;
+
         for (int i = 0; i < gridSizeX; i++) {
             for (int j = 0; j < gridSizeY; j++) {
                 if (tileArray[i][j].getEmberOnTile() != null && tileArray[i][j].getEmberOnTile().getParentHos() == player) {
@@ -1094,13 +1096,14 @@ public class GameLogic {
             System.out.println("Feltamasztas");
             System.out.println("Melyik egysegre szeretned hasznalni?");
             try {
-                while (posX > 9 || posX < 0) {
-                    System.out.println("X (0-9):");
-                    posX = sc.nextInt();
-                }
+                int posX = -1, posY = -1;
                 while (posY > 11 || posY < 0) {
-                    System.out.println("Y (0-11):");
+                    System.out.println("X: (0-11)");
                     posY = sc.nextInt();
+                }
+                while (posX > 9 || posX < 0) {
+                    System.out.println("Y: (0-9)");
+                    posX = sc.nextInt();
                 }
                 if (tileArray[posX][posY].getEmberOnTile() != null && tileArray[posX][posY].getEmberOnTile().isSelected()) {
                     for (int i = 0; i < player.getBoughtMagic().length; i++) {
@@ -1126,19 +1129,20 @@ public class GameLogic {
     public void unitOverView() throws IOException, InterruptedException {
         clearSelected();
         Scanner sc = new Scanner(System.in);
-        int posX = -1, posY = -1;
+
         Unit focusedUnit;
         while (true) {
             drawGrid();
             System.out.println("Melyik egyseg adatait szeretned megtekinteni?");
             try {
-                while (posX > 9 || posX < 0) {
-                    System.out.println("X (0-9):");
-                    posX = sc.nextInt();
-                }
+                int posX = -1, posY = -1;
                 while (posY > 11 || posY < 0) {
-                    System.out.println("Y (0-11):");
+                    System.out.println("X: (0-11)");
                     posY = sc.nextInt();
+                }
+                while (posX > 9 || posX < 0) {
+                    System.out.println("Y: (0-9)");
+                    posX = sc.nextInt();
                 }
                 if (tileArray[posX][posY].getEmberOnTile() != null) {
                     while (true) {
