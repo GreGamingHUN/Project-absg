@@ -10,6 +10,12 @@ public class Revive extends Magic {
         this.setPrice(120);
         this.setMana(6);
     }
+
+    /**
+     * Feltámasztja az adott egységet
+     * @param source A player, aki a varázslatot indította
+     * @param target Az egység, ami megkapja a varázslatot
+     */
     @Override
     public void attack(Hos source, Unit target) {
         if (target.getHp() + target.getParentHos().getMagicUp() * 50 >= target.getMaxHp()) {

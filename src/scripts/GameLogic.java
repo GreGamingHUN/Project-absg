@@ -600,6 +600,14 @@ public class GameLogic {
 
         }
     }
+
+    /**
+     * Az íjász támadása
+     * @param source Az egység, ami támadni fog
+     * @return 0, ha a támadás sikeres, 1, ha nem
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public int archerAttack(Unit source) throws IOException, InterruptedException {
         Scanner sc = new Scanner(System.in);
         for (int i = 0; i < gridSizeX; i++) {

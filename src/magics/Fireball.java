@@ -11,6 +11,12 @@ public class Fireball extends Magic {
         this.setPrice(120);
         this.setMana(9);
     }
+
+    /**
+     * Megcsinálja a tűzlabda varázslatot a megadott pozíció körül
+     * @param source A játékos, aki indította a varázslatot
+     * @param target A célpont, aki körül érvényes a tűzlabda
+     */
     @Override
     public void attack(Hos source, Unit target) {
         try {
