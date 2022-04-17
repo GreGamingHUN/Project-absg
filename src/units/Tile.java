@@ -1,3 +1,7 @@
+/**
+ * A mező objektum. Ez az, amin az egységek állnak, és mindent eltárolnak magukról (a pozíciójuk, valamint hogy mi áll rajtuk épp)
+ */
+
 package units;
 
 public class Tile {

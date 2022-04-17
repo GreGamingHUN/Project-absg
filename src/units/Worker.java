@@ -1,3 +1,8 @@
+/**
+ * A földműves objektum, ami tartalmaz mindent, ami csak a földműveshez tartozó adatokat tartalmazza
+ */
+
+
 package units;
 
 public class Worker extends Unit{

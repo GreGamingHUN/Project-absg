@@ -1,3 +1,7 @@
+/**
+ * Az egység objektum. Ez tartalmaz minden adatot, ami a különböző egységekkel megegyezik.
+ */
+
 package units;
 
 import java.util.Random;
@@ -5,6 +9,7 @@ import java.util.Random;
 public class Unit {
 
     private int posX;
+    private boolean poisoned = false;
     private int posY;
     private boolean selected = false;
 
@@ -78,6 +83,10 @@ public class Unit {
     //region Getters
 
 
+    public boolean isPoisoned() {
+        return this.poisoned;
+    }
+
     public int getDefMinDmg() {
         return this.defMinDmg;
     }
@@ -141,6 +150,10 @@ public class Unit {
 
     //region Setters
 
+
+    public void setPoisoned(boolean poisoned) {
+        this.poisoned = poisoned;
+    }
 
     public void setDefMinDmg(int defMinDmg) {
         this.defMinDmg = defMinDmg;

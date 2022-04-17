@@ -1,3 +1,7 @@
+/**
+ * A griff objektum, ami tartalmaz mindent, ami csak a griffhez tartozó adatokat tartalmazza
+ */
+
 package units;
 
 import java.util.Random;

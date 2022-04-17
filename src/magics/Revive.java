@@ -1,3 +1,7 @@
+/**
+ * Az feltámasztás objektum. Tartalmazza a hozzá tartozó adatokat, valamint a támadását, ami a gyúgyításért felelős
+ */
+
 package magics;
 
 import units.Hos;
@@ -18,18 +22,21 @@ public class Revive extends Magic {
      */
     @Override
     public void attack(Hos source, Unit target) {
-        if (target.getHp() + target.getParentHos().getMagicUp() * 50 >= target.getMaxHp()) {
-            target.setHp(target.getMaxHp());
-            double newHp= target.getHp()/target.getDefaultHp();
-            target.setUnitAmount((int)Math.ceil(newHp));
-            target.setMinDmg(target.getUnitAmount() * target.getDefMinDmg());
-            target.setMaxDmg(target.getUnitAmount() * target.getDefMaxDmg());
-        } else {
-            target.setHp(target.getHp() + target.getParentHos().getMagicUp() * 50);
-            double newHp= target.getHp()/target.getDefaultHp();
-            target.setUnitAmount((int)Math.ceil(newHp));
-            target.setMinDmg(target.getUnitAmount() * target.getDefMinDmg());
-            target.setMaxDmg(target.getUnitAmount() * target.getDefMaxDmg());
+        if (!source.isUsedAttackMagic()) {
+            if (target.getHp() + target.getParentHos().getMagicUp() * 50 >= target.getMaxHp()) {
+                target.setHp(target.getMaxHp());
+                double newHp= target.getHp()/target.getDefaultHp();
+                target.setUnitAmount((int)Math.ceil(newHp));
+                target.setMinDmg(target.getUnitAmount() * target.getDefMinDmg());
+                target.setMaxDmg(target.getUnitAmount() * target.getDefMaxDmg());
+            } else {
+                target.setHp(target.getHp() + target.getParentHos().getMagicUp() * 50);
+                double newHp= target.getHp()/target.getDefaultHp();
+                target.setUnitAmount((int)Math.ceil(newHp));
+                target.setMinDmg(target.getUnitAmount() * target.getDefMinDmg());
+                target.setMaxDmg(target.getUnitAmount() * target.getDefMaxDmg());
+            }
         }
+
     }
 }

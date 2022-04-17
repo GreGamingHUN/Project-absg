@@ -1,3 +1,7 @@
+/**
+ * A creeper objektum, ami tartalmaz mindent, ami csak a creeperhez tartozó adatokat tartalmazza
+ */
+
 package units;
 
 public class Creeper extends Unit{

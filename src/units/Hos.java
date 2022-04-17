@@ -1,3 +1,7 @@
+/**
+ * A Hős objektum, ami tartalmazza a játékos és az ellenfél specifikus adatait
+ */
+
 package units;
 
 import magics.Magic;
@@ -14,6 +18,7 @@ public class Hos {
     private Unit[] boughtUnits = new Unit[20];
     private int balance;
     private int mana = 30;
+    private int maxMana;
 
     private int abilityPrice = 5;
     private int tempAbilityPrice = 5;
@@ -56,6 +61,10 @@ public class Hos {
 
     //region Getters
 
+
+    public int getMaxMana() {
+        return this.maxMana;
+    }
 
     public boolean isUsedAttackMagic() {
         return this.usedAttackMagic;
@@ -128,6 +137,10 @@ public class Hos {
     //endregion
 
     //region Setters
+
+    public void setMaxMana(int maxMana) {
+        this.maxMana = maxMana;
+    }
 
     public void setUsedAttackMagic(boolean usedAttackMagic) {
         this.usedAttackMagic = usedAttackMagic;

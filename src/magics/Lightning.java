@@ -1,3 +1,7 @@
+/**
+ * A villám objektum. Tartalmazza a hozzá tartozó adatokat, valamint a támadását, ami a sebzésért felelős
+ */
+
 package magics;
 
 import units.Hos;
@@ -15,6 +19,8 @@ public class Lightning extends Magic {
 
     @Override
     public void attack(Hos source, Unit target) {
-        target.setHp(target.getHp() - this.getParentHos().getMagicUp() * 30);
+        if (!source.isUsedAttackMagic()) {
+            target.setHp(target.getHp() - this.getParentHos().getMagicUp() * 30);
+        }
     }
 }

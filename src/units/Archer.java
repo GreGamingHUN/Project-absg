@@ -1,3 +1,7 @@
+/**
+ * Az íjász objektum, ami tartalmaz mindent, ami csak a íjászhoz tartozó adatokat tartalmazza
+ */
+
 package units;
 
 public class Archer extends Unit{
