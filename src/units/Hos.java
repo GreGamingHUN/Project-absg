@@ -14,7 +14,7 @@ public class Hos {
     private boolean boughtLightning = false;
     private boolean boughtFireball = false;
     private boolean boughtRevive = false;
-    private Magic[] boughtMagic = new Magic[3];
+    private Magic[] boughtMagic = new Magic[5];
     private Unit[] boughtUnits = new Unit[20];
     private int balance;
     private int mana = 30;
@@ -32,17 +32,29 @@ public class Hos {
 
     private boolean usedAttackMagic = false;
 
+    /**
+     * A hős alap támadása
+     * @param target a célpont, akit meg akar támadni
+     */
     public void attack(Unit target) {
         target.setHp(target.getHp() - (this.getDmgUp() * 10));
         target.getDamaged();
     }
 
     //region Constructors
+
+    /**
+     * Az ellenfél konstruktorja
+     */
     public Hos() {
         name = "enemy";
         this.balance = 1000;
     }
 
+    /**
+     * A játékos konstruktorja
+     * @param diff A nehézség, mely alapján a játékos megkapja az aranyat
+     */
     public Hos(int diff) {
         name = "player";
         switch (diff) {
@@ -178,6 +190,10 @@ public class Hos {
         this.mana = mana;
     }
 
+    /**
+     * A +támadás fejlesztés beállítása
+     * @param dmgUp ahány szintet akar fejleszteni a játékos
+     */
     public void setDmgUp(int dmgUp) {
         if (Objects.equals(this.name, "player")) {
             int price = 0;
@@ -211,6 +227,10 @@ public class Hos {
         }
     }
 
+    /**
+     * A +védekezés fejlesztés beállítása
+     * @param defUp ahány szintet akar fejleszteni a játékos
+     */
     public void setDefUp(int defUp) {
         if (Objects.equals(this.name, "player")) {
             int price = 0;
@@ -243,6 +263,10 @@ public class Hos {
         }
     }
 
+    /**
+     * a +varázslat (mana mennyiség) beállítása
+     * @param magicUp ahány szintet akar fejleszteni a játékos
+     */
     public void setMagicUp(int magicUp) {
 
         if (Objects.equals(this.name, "player")) {

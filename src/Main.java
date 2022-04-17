@@ -1,3 +1,7 @@
+/**
+ * A fő class, amely az egész játékot elindítja
+ */
+
 import scripts.GameLogic;
 import java.io.IOException;
 import java.util.InputMismatchException;
@@ -6,12 +10,19 @@ import java.util.Scanner;
 public class Main {
 
 
+    /**
+     * A fő metódus, mely a nehézséget továbbítja a GameLogic classnak
+     * @param args
+     * @throws InterruptedException
+     * @throws IOException
+     */
+
     public static void main(String[] args) throws InterruptedException, IOException {
 
         Scanner sc = new Scanner(System.in);
         int diff;
         while (true) {
-            new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            GameLogic.clearScreen();
             System.out.println("Udvozollek a Project-ABSG-ben!");
             System.out.println("Valassz nehezseget:");
 
