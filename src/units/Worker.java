@@ -1,8 +1,8 @@
 package units;
 
 public class Worker extends Unit{
-    private String unitName = "Munkas";
-    private String unitShort = "M";
+    private String unitName = "Foldmuves";
+    private String unitShort = "F";
 
     public Worker(int unitAmount, Hos parentHos) {
         super(unitAmount, parentHos);

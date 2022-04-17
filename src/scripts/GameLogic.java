@@ -181,7 +181,6 @@ public class GameLogic {
                     try {
                         System.out.print("\nX pozicio (0-1):");
                         posY = sc.nextInt();
-                        break;
                     } catch (InputMismatchException e) {
                         System.out.println("Ervenytelen input!");
                         sc.nextLine();
@@ -192,7 +191,6 @@ public class GameLogic {
                     try {
                         System.out.println("Y pozicio (0-9):");
                         posX = sc.nextInt();
-                        break;
                     } catch (InputMismatchException e) {
                         System.out.println("Ervenytelen input!");
                         sc.nextLine();
@@ -218,25 +216,27 @@ public class GameLogic {
 
             }
         }
-
-        System.out.println("\nMit szeretnel tenni?");
-        System.out.println("1 - Tovabb");
-        System.out.println("2 - Kilepes");
-        System.out.print("Opcio: ");
-        Scanner sc = new Scanner(System.in);
-
-        switch (sc.nextInt()) {
-            case 1:
-                gameState = 2;
-                break;
-            case 2:
-                if (sc.nextInt() == 2) {
-                    System.out.println("Biztos ki szeretnel lepni a jatekbol? (y/n)");
-                    if (sc.next().equals("y") || sc.next().equals("Y")) {
-                        System.exit(0);
-                    }
+        while (true) {
+            System.out.println("\nMit szeretnel tenni?");
+            System.out.println("1 - Tovabb");
+            System.out.println("2 - Kilepes");
+            System.out.print("Opcio: ");
+            Scanner sc = new Scanner(System.in);
+            try {
+                switch (sc.nextInt()) {
+                    case 1:
+                        gameState = 2;
+                        return;
+                    case 2:
+                        System.out.println("Biztos ki szeretnel lepni a jatekbol? (y/n)");
+                        if (sc.next().equals("y") || sc.next().equals("Y")) {
+                            System.exit(0);
+                        }
+                        break;
                 }
-                break;
+            } catch (InputMismatchException e) {
+                System.out.println("Ervenytelen input!");
+            }
         }
 
     }
@@ -315,8 +315,6 @@ public class GameLogic {
         while (gameEnded == 0) {
             player.setUsedAttackMagic(false);
             roundPlayer(round);
-            roundEnemy();
-            clearVisszatamadott();
             for (int i = 0; i < gridSizeX; i++) {
                 for (int j = 0; j < gridSizeY; j++) {
                     if (tileArray[i][j].getEmberOnTile() != null && tileArray[i][j].getEmberOnTile().getHp() <= 0) {
@@ -362,6 +360,8 @@ public class GameLogic {
                 System.out.println("Nyertel!");
                 System.out.println("Nyomj ENTER-t a kilepeshez");
             }
+            roundEnemy();
+            clearVisszatamadott();
             round++;
         }
     }
@@ -387,7 +387,9 @@ public class GameLogic {
             for (int j = 0; j < player.getBoughtUnits().length; j++) {
                 if (player.getBoughtUnits()[j] != null) {
                     System.out.println((player.getBoughtUnits()[j].isSelected() ? TEXT_GREEN : TEXT_RESET) +
-                            player.getBoughtUnits()[j].getUnitName() + "\t\t" +
+                                    (player.getBoughtUnits()[j].getUnitName() == "Foldmuves" ?
+                                            player.getBoughtUnits()[j].getUnitName() + "\t" :
+                                            player.getBoughtUnits()[j].getUnitName() + "\t\t") +
                             player.getBoughtUnits()[j].getHp() + "\t\t" + player.getBoughtUnits()[j].getUnitAmount() + TEXT_RESET);
                 } else {
                     break;
@@ -454,6 +456,34 @@ public class GameLogic {
     public void roundEnemy() throws IOException, InterruptedException {
         drawGrid();
         System.out.println("Enemy kore van");
+        for (int i = 0; i < gridSizeX; i++) {
+            for (int j = 0; j < gridSizeY; j++) {
+                if (tileArray[i][j].getEmberOnTile() != null &&
+                        tileArray[i][j].getEmberOnTile().getHp() < tileArray[i][j].getEmberOnTile().getMaxHp()) {
+                    if (enemy.isBoughtLightning()) {
+                        for (int k = 0; k < enemy.getBoughtMagic().length; k++) {
+                            if (enemy.getBoughtMagic()[k] != null && enemy.getBoughtMagic()[k].getName() == "Villam" &&
+                            enemy.getMana() - enemy.getBoughtMagic()[k].getMana()  >= 0) {
+                                enemy.getBoughtMagic()[k].attack(enemy, tileArray[i][j].getEmberOnTile());
+                                enemy.setUsedAttackMagic(true);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < enemy.getBoughtUnits().length; i++) {
+            for (int j = 0; j < gridSizeY; j++) {
+                if (tileArray[enemy.getBoughtUnits()[i].getPosX()][j].getEmberOnTile() != null &&
+                        tileArray[enemy.getBoughtUnits()[i].getPosX()][j].getEmberOnTile().getParentHos() == enemy) {
+                    if (tileArray[enemy.getBoughtUnits()[i].getPosX()][enemy.getBoughtUnits()[i].getPosY()
+                            - enemy.getBoughtUnits()[i].getSpeed()].getEmberOnTile() == null) {
+                        enemy.getBoughtUnits()[i].setPosY(enemy.getBoughtUnits()[i].getPosY() - enemy.getBoughtUnits()[i].getSpeed());
+                    }
+                }
+            }
+        }
 
         try
         {
@@ -528,6 +558,8 @@ public class GameLogic {
         System.out.println("Valassz tamadast");
         if ("Ijasz".equals(target.getUnitName())) {
             System.out.println("1 - Loves");
+        } else if ("Creeper".equals(target.getUnitName())) {
+            System.out.println("1 - Aaaw maan");
         } else {
             System.out.println("1 - Alap tamadas");
         }
@@ -541,6 +573,9 @@ public class GameLogic {
                         } else {
                             return 0;
                         }
+                    } else if (target.getUnitName() == "Creeper") {
+                        creeperAttack(target);
+                        return 0;
                     } else {
                         defaultAttack(target);
                         Thread.sleep(1000);
@@ -660,64 +695,101 @@ public class GameLogic {
             }
         }
     }
-
+    public void creeperAttack(Unit source) {
+        for (int i = source.getPosX() - 1; i < source.getPosX() + 2; i++) {
+            if (i >=GameLogic.gridSizeX || i < 0) {
+                continue;
+            }
+            for (int j = source.getPosY() - 1; j < source.getPosY() + 2; j++) {
+                if (j >=GameLogic.gridSizeY || j < 0) {
+                    continue;
+                }
+                if (tileArray[i][j].getEmberOnTile() != null) {
+                    source.attack(tileArray[i][j].getEmberOnTile());
+                }
+            }
+        }
+        source.setHp(0);
+    }
     public void buyUnit() throws IOException, InterruptedException {
-        new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-        System.out.println("Penzed = " + player.getBalance() + "\n");
-        System.out.println("Mit szeretnel venni?");
-        System.out.println("1 - Munkas      2 arany/db");
-        System.out.println("2 - ijasz       6 arany/db");
-        System.out.println("3 - Griff      15 arany/db");
-        System.out.println("\nOpcio:");
-        Scanner sc = new Scanner(System.in);
 
-        int number = sc.nextInt();
+        while (true) {
+            try {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+                System.out.println("Penzed = " + player.getBalance() + "\n");
+                System.out.println("Mit szeretnel venni?");
+                System.out.println("1 - Foldmuves\t\t2 arany/db");
+                System.out.println("2 - ijasz\t\t6 arany/db");
+                System.out.println("3 - Griff\t\t15 arany/db");
+                System.out.println("4 - Creeper\t\t30 arany/db");
+                System.out.println("\nOpcio:");
+                Scanner sc = new Scanner(System.in);
 
-        System.out.println("\nHany darabot akarsz venni egy egysegbe?");
+                int number = sc.nextInt();
 
-        int amount = sc.nextInt();
+                System.out.println("\nHany darabot akarsz venni egy egysegbe?");
 
-        int i;
-        switch (number) {
-            case 1:
-                for (i = 0; i < player.getBoughtUnits().length; i++) {
-                    if (player.getBoughtUnits()[i] == null) {
-                        player.getBoughtUnits()[i] = new Worker(amount, player);
-                        if (player.getBoughtUnits()[i].getUnitAmount() * player.getBoughtUnits()[i].getPrice() > player.getBalance()) {
-                            System.out.println("Nincs eleg penzed erre!");
-                            player.getBoughtUnits()[i] = null;
+                int amount = sc.nextInt();
+
+                int i;
+                switch (number) {
+                    case 1:
+                        for (i = 0; i < player.getBoughtUnits().length; i++) {
+                            if (player.getBoughtUnits()[i] == null) {
+                                player.getBoughtUnits()[i] = new Worker(amount, player);
+                                if (player.getBoughtUnits()[i].getUnitAmount() * player.getBoughtUnits()[i].getPrice() > player.getBalance()) {
+                                    System.out.println("Nincs eleg penzed erre!");
+                                    player.getBoughtUnits()[i] = null;
+                                }
+                                break;
+                            }
                         }
-                        break;
-                    }
-                }
-                player.setBalance(player.getBalance() - player.getBoughtUnits()[i].getUnitAmount() * player.getBoughtUnits()[i].getPrice());
-                break;
-            case 2:
-                for (i = 0; i < player.getBoughtUnits().length; i++) {
-                    if (player.getBoughtUnits()[i] == null) {
-                        player.getBoughtUnits()[i] = new Archer(amount, player);
-                        if (player.getBoughtUnits()[i].getUnitAmount() * player.getBoughtUnits()[i].getPrice() > player.getBalance()) {
-                            System.out.println("Nincs eleg penzed erre!");
-                            player.getBoughtUnits()[i] = null;
+                        player.setBalance(player.getBalance() - player.getBoughtUnits()[i].getUnitAmount() * player.getBoughtUnits()[i].getPrice());
+                        return;
+                    case 2:
+                        for (i = 0; i < player.getBoughtUnits().length; i++) {
+                            if (player.getBoughtUnits()[i] == null) {
+                                player.getBoughtUnits()[i] = new Archer(amount, player);
+                                if (player.getBoughtUnits()[i].getUnitAmount() * player.getBoughtUnits()[i].getPrice() > player.getBalance()) {
+                                    System.out.println("Nincs eleg penzed erre!");
+                                    player.getBoughtUnits()[i] = null;
+                                }
+                                break;
+                            }
                         }
-                        break;
-                    }
-                }
-                player.setBalance(player.getBalance() - player.getBoughtUnits()[i].getUnitAmount() * player.getBoughtUnits()[i].getPrice());
-                break;
-            case 3:
-                for (i = 0; i < player.getBoughtUnits().length; i++) {
-                    if (player.getBoughtUnits()[i] == null) {
-                        player.getBoughtUnits()[i] = new Griff(amount, player);
-                        if (player.getBoughtUnits()[i].getUnitAmount() * player.getBoughtUnits()[i].getPrice() > player.getBalance()) {
-                            System.out.println("Nincs eleg penzed erre!");
-                            player.getBoughtUnits()[i] = null;
+                        player.setBalance(player.getBalance() - player.getBoughtUnits()[i].getUnitAmount() * player.getBoughtUnits()[i].getPrice());
+                        return;
+                    case 3:
+                        for (i = 0; i < player.getBoughtUnits().length; i++) {
+                            if (player.getBoughtUnits()[i] == null) {
+                                player.getBoughtUnits()[i] = new Griff(amount, player);
+                                if (player.getBoughtUnits()[i].getUnitAmount() * player.getBoughtUnits()[i].getPrice() > player.getBalance()) {
+                                    System.out.println("Nincs eleg penzed erre!");
+                                    player.getBoughtUnits()[i] = null;
+                                }
+                                break;
+                            }
                         }
-                        break;
-                    }
+                        player.setBalance(player.getBalance() - player.getBoughtUnits()[i].getUnitAmount() * player.getBoughtUnits()[i].getPrice());
+                        return;
+                    case 4:
+                        for (i = 0; i < player.getBoughtUnits().length; i++) {
+                            if (player.getBoughtUnits()[i] == null) {
+                                player.getBoughtUnits()[i] = new Creeper(amount, player);
+                                if (player.getBoughtUnits()[i].getUnitAmount() * player.getBoughtUnits()[i].getPrice() > player.getBalance()) {
+                                    System.out.println("Nincs eleg penzed erre!");
+                                    player.getBoughtUnits()[i] = null;
+                                }
+                                break;
+                            }
+                        }
+                        player.setBalance(player.getBalance() - player.getBoughtUnits()[i].getUnitAmount() * player.getBoughtUnits()[i].getPrice());
+                        return;
                 }
-                player.setBalance(player.getBalance() - player.getBoughtUnits()[i].getUnitAmount() * player.getBoughtUnits()[i].getPrice());
-                break;
+            } catch (InputMismatchException e) {
+                System.out.println("Ervenytelen input!");
+                Thread.sleep(1000);
+            }
         }
     }
     public void buyAbility() throws IOException, InterruptedException {
@@ -1195,24 +1267,24 @@ public class GameLogic {
     }
     public void createEnemy() {
         Random rand = new Random();
-        int randomNumber = 1;
+        int randomNumber = rand.nextInt(1, 3);
 
         Unit[] enemyUnits = new Unit[20];
 
         switch (randomNumber) {
             case 1 -> {
-                enemyUnits[0] = new Worker(10, enemy);
-                enemyUnits[1] = new Worker(10, enemy);
-                enemyUnits[2] = new Worker(10, enemy);
-                enemyUnits[3] = new Worker(10, enemy);
-                enemyUnits[4] = new Worker(10, enemy);
-                enemyUnits[5] = new Worker(10, enemy);
-                enemyUnits[6] = new Worker(10, enemy);
-                enemyUnits[7] = new Worker(10, enemy);
-                enemyUnits[8] = new Griff(2, enemy);
-                enemyUnits[9] = new Griff(2, enemy);
-                enemyUnits[10] = new Archer(8, enemy);
-                enemyUnits[11] = new Archer(8, enemy);
+                enemyUnits[0] = new Worker(20, enemy);
+                enemyUnits[1] = new Worker(20, enemy);
+                enemyUnits[2] = new Worker(20, enemy);
+                enemyUnits[3] = new Worker(20, enemy);
+                enemyUnits[4] = new Worker(20, enemy);
+                enemyUnits[5] = new Worker(20, enemy);
+                enemyUnits[6] = new Worker(20, enemy);
+                enemyUnits[7] = new Worker(20, enemy);
+                enemyUnits[8] = new Griff(3, enemy);
+                enemyUnits[9] = new Griff(3, enemy);
+                enemyUnits[10] = new Archer(10, enemy);
+                enemyUnits[11] = new Archer(10, enemy);
                 enemyUnits[0].setPosX(2);
                 enemyUnits[0].setPosY(11);
                 enemyUnits[1].setPosX(2);
@@ -1237,18 +1309,83 @@ public class GameLogic {
                 enemyUnits[10].setPosY(11);
                 enemyUnits[11].setPosX(6);
                 enemyUnits[11].setPosY(11);
-
-                enemy.setBoughtUnits(enemyUnits);
-
-                for (int i = 0; i < enemy.getBoughtUnits().length; i++) {
-                    if (enemy.getBoughtUnits()[i] != null) {
-                        tileArray[enemy.getBoughtUnits()[i].getPosX()][enemy.getBoughtUnits()[i].getPosY()].setEmberOnTile(enemy.getBoughtUnits()[i]);
-                    }
+                if (rand.nextInt(1, 3) == 1) {
+                    enemy.setBoughtLightning(true);
+                }
+                if (rand.nextInt(1, 3) == 1) {
+                    enemy.setBoughtFireball(true);
+                }
+                if (rand.nextInt(1, 3) == 1) {
+                    enemy.setBoughtRevive(true);
                 }
                 enemy.setDmgUp(4);
-                enemy.setDefUp(3);
-                enemy.setMagicUp(2);
+                enemy.setDefUp(5);
+                enemy.setMagicUp(3);
+                enemy.setKnowledge(3);
+                enemy.setMoral(4);
+                enemy.setLuck(3);
 
+            }
+            case 2 -> {
+                enemyUnits[0] = new Griff(3, enemy);
+                enemyUnits[1] = new Griff(3, enemy);
+                enemyUnits[2] = new Archer(10, enemy);
+                enemyUnits[3] = new Archer(10, enemy);
+                enemyUnits[4] = new Archer(10, enemy);
+                enemyUnits[5] = new Archer(10, enemy);
+                enemyUnits[6] = new Worker(20, enemy);
+                enemyUnits[7] = new Worker(20, enemy);
+                enemyUnits[8] = new Worker(20, enemy);
+                enemyUnits[9] = new Worker(20, enemy);
+                enemyUnits[10] = new Worker(20, enemy);
+                enemyUnits[11] = new Worker(20, enemy);
+                enemyUnits[0].setPosX(4);
+                enemyUnits[0].setPosY(11);
+                enemyUnits[1].setPosX(5);
+                enemyUnits[1].setPosY(11);
+                enemyUnits[2].setPosX(3);
+                enemyUnits[2].setPosY(11);
+                enemyUnits[3].setPosX(6);
+                enemyUnits[3].setPosY(11);
+                enemyUnits[4].setPosX(4);
+                enemyUnits[4].setPosY(10);
+                enemyUnits[5].setPosX(5);
+                enemyUnits[5].setPosY(10);
+                enemyUnits[6].setPosX(2);
+                enemyUnits[6].setPosY(11);
+                enemyUnits[7].setPosX(7);
+                enemyUnits[7].setPosY(11);
+                enemyUnits[8].setPosX(3);
+                enemyUnits[8].setPosY(10);
+                enemyUnits[9].setPosX(6);
+                enemyUnits[9].setPosY(10);
+                enemyUnits[10].setPosX(0);
+                enemyUnits[10].setPosY(11);
+                enemyUnits[11].setPosX(9);
+                enemyUnits[11].setPosY(11);
+                if (rand.nextInt(1, 3) == 1) {
+                    enemy.setBoughtLightning(true);
+                }
+                if (rand.nextInt(1, 3) == 1) {
+                    enemy.setBoughtFireball(true);
+                }
+                if (rand.nextInt(1, 3) == 1) {
+                    enemy.setBoughtRevive(true);
+                }
+
+                enemy.setDmgUp(6);
+                enemy.setDefUp(4);
+                enemy.setMagicUp(4);
+                enemy.setKnowledge(3);
+                enemy.setMoral(3);
+                enemy.setLuck(3);
+            }
+        }
+        enemy.setBoughtUnits(enemyUnits);
+
+        for (int i = 0; i < enemy.getBoughtUnits().length; i++) {
+            if (enemy.getBoughtUnits()[i] != null) {
+                tileArray[enemy.getBoughtUnits()[i].getPosX()][enemy.getBoughtUnits()[i].getPosY()].setEmberOnTile(enemy.getBoughtUnits()[i]);
             }
         }
     }
