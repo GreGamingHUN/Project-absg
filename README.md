@@ -26,3 +26,8 @@ Varázslatok:
 - Tűzlabda : Úristen, egy hatalmas kőkocka ami lángol!
 - Feltámasztás : Nehogy azt hidd, hogy vége a csatának!
 - Atombomba : Sugárvédő felszerelés ajánlott!
+
+# A JÁTÉK NINCS KÉSZ!
+A projekt egy egyetemi beadandó szüleménye, melyben bizonyos varázslatok/egységek nincsenek készen, mivel azokat a maradék időmben pluszként kezdtem el  írni hozzá, viszont a határidőre nem fejeztem azokat be.
+
+(Az egyetemi pontszámom szerencsére nem befolyásolta lol)
